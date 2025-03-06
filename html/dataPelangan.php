@@ -79,6 +79,7 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
     <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
 
     <!-- Page CSS -->
+    <link rel="stylesheet" href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
 
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
@@ -459,6 +460,7 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                         <div class="row justify-content-end">
                           <div class="col-sm-10">
                             <button type="submit" class="btn btn-primary" name="tambahPelangan">Simpan</button>
+                            <input type="reset" class="btn btn-warning" value="Reset">
                           </div>
                         </div>
                       </form>
