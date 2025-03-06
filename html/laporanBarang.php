@@ -60,6 +60,9 @@ $barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
     <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
 
     <!-- Page CSS -->
+    <link rel="stylesheet" href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+    <link href="../DataTables/datatables.min.css" rel="stylesheet">
+
 
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
@@ -400,15 +403,15 @@ $barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
                 <h5 class="card-header">Data Barang</h5>
                 <div class="card-body">
                   <div class="table-responsive text-nowrap">
-                    <table class="table table-bordered">
-                      <thead>
+                  <table id="tabel-data-barang" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                  <thead>
                         <tr>
                           <th>Kode Produk</th>
                           <th>Nama Produk</th>
-                          <th>Stok</th>
+                          <th>Harga</th>
                           <th>Action</th>
                         </tr>
-                      </thead>
+                  </thead>
                       <tbody>
                       <?php
                           $get = mysqli_query($connection,"SELECT * FROM tbl_barang");
@@ -417,22 +420,32 @@ $barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
                           while($barang=mysqli_fetch_array($get)){
                           $kodeBarang = $barang['id_barang'];
                           $namaBarang = $barang['nama_barang'];
-                          $stok = $barang['stok'];
+                          $harga = $barang['harga'];
 
                         ?>
                         <tr>
                             <td><?=$kodeBarang;?></td>
                             <td><?=$namaBarang;?> </td>
-                            <td><?=$stok;?></td>
-                            <td>edit</td>
+                            <td><?=$harga;?></td>
+                            <td>
+                              <div class="action">
+                              <a class="btn btn-success" href="" id="nisn"  data-toggle="modal" data-target="#">Edit</a>
+                                <a href="deleteMember.php?nisn=<?= $item["nisn"]; ?>" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus data member ?');"><i class="fa-solid fa-trash"></i></a>
+                              </div>
+                            </td>
+
                         </tr>  
 
                         <?php
                           };//end of while                              
                           ?>
                       </tbody>
-                    </table>
+                  </table>  
                   </div>
+                  <div class="col-sm-10 mt-3">
+                      <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
+                    </div
+
                 </div>
               </div>
 
@@ -449,27 +462,7 @@ $barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
                   <script>
                     document.write(new Date().getFullYear());
                   </script>
-                  , made with ❤️ by
-                  <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
-                </div>
-                <div>
-                  <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
-                  <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
-
-                  <a
-                    href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Documentation</a
-                  >
-
-                  <a
-                    href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Support</a
-                  >
-                </div>
+                  , made with ❤️ by Nanda & Nyla || ITB AAS Indonesia                </div>
               </div>
             </footer>
             <!-- / Footer -->
@@ -485,15 +478,6 @@ $barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
     <!-- / Layout wrapper -->
-
-    <div class="buy-now">
-      <a
-        href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
-        target="_blank"
-        class="btn btn-danger btn-buy-now"
-        >Upgrade to Pro</a
-      >
-    </div>
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
@@ -514,7 +498,19 @@ $barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
     <!-- Page JS -->
     <script src="../assets/js/dashboards-analytics.js"></script>
 
+    <script src="../DataTables/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+
+
+
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <script>
+    $(document).ready(function(){
+        $('#tabel-data-barang').DataTable();
+    });
+</script>
+
   </body>
 </html>

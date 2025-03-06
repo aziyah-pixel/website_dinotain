@@ -13,9 +13,9 @@ function tambahBarang($dataBarang) {
   
   $idbarang = htmlspecialchars($dataBarang["id_barang"]);
   $namabarang = htmlspecialchars($dataBarang["nama_barang"]);
-  $stok = htmlspecialchars($dataBarang["stok"]);  
+  $harga = htmlspecialchars($dataBarang["harga"]);  
   
-  $queryInsertDataBarang = "INSERT INTO tbl_barang VALUES('$idbarang', '$namabarang', '$stok')";
+  $queryInsertDataBarang = "INSERT INTO tbl_barang VALUES('$idbarang', '$namabarang', '$harga')";
   
   mysqli_query($connection, $queryInsertDataBarang);
   return mysqli_affected_rows($connection);

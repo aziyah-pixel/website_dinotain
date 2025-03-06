@@ -448,9 +448,9 @@ if(isset($_POST["tambahBarang"]) ) {
                           </div>
                         </div>
                         <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-stok">Stok Barang</label>
+                          <label class="col-sm-2 col-form-label" for="basic-default-stok">Harga Barang</label>
                           <div class="col-sm-10">
-                            <input type="number" name = "stok" id="basic-default-stok"
+                            <input type="number" name = "harga" id="basic-default-stok"
                               class="form-control phone-mask"
                               aria-describedby="basic-default-stok"
                               required
