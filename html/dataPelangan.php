@@ -80,6 +80,7 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
 
     <!-- Page CSS -->
     <link rel="stylesheet" href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+    <link href="../DataTables/datatables.min.css" rel="stylesheet">
 
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
@@ -469,13 +470,14 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                 </div>
                 <!--/Basic Layout-->
 
+
                 <!--Tabel Pelangan-->
                 <div class="card">
                 <h5 class="card-header">Data Pelangan/Member</h5>
                   <div class="card-body">
                     <div class="table-responsive text-nowrap">
-                      <table class="table table-bordered">
-                        <thead>
+                    <table id="tabel-data-pelangan" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                      <thead>
                           <tr>
                             <th>No</th>
                             <th>Nama Pelangan</th>
@@ -483,33 +485,36 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                             <th>No Telepon</th>
                             <th>Action</th>
                           </tr>
-                        </thead>
-                        <tbody>
+                      </thead>
+                      <tbody>
 
-                        <?php
-                          $get = mysqli_query($connection,"SELECT nama_pelangan, alamat, no_telep FROM tbl_pelangan");
-                          $i = 1; //penomoran
+                          <?php
+                            $get = mysqli_query($connection,"SELECT nama_pelangan, alamat, no_telep FROM tbl_pelangan");
+                            $i = 1; //penomoran
 
-                          while($pelangan=mysqli_fetch_array($get)){
-                          $namaPelangan = $pelangan['nama_pelangan'];
-                          $alamat = $pelangan['alamat'];
-                          $noTelepon = $pelangan['no_telep'];
+                            while($pelangan=mysqli_fetch_array($get)){
+                            $namaPelangan = $pelangan['nama_pelangan'];
+                            $alamat = $pelangan['alamat'];
+                            $noTelepon = $pelangan['no_telep'];
 
-                        ?>
-                        <tr>
-                            <td><?=$i++;?></td>
-                            <td><?=$namaPelangan;?> </td>
-                            <td><?=$alamat;?></td>
-                            <td><?=$noTelepon;?></td>
-                            <td>edit</td>
-                        </tr>  
-
-                        <?php
-                          };//end of while                              
                           ?>
+                          <tr>
+                              <td><?=$i++;?></td>
+                              <td><?=$namaPelangan;?> </td>
+                              <td><?=$alamat;?></td>
+                              <td><?=$noTelepon;?></td>
+                              <td>edit</td>
+                          </tr>  
 
-                        </tbody>
-                      </table>
+                          <?php
+                            };//end of while                              
+                            ?>
+
+                      </tbody>
+                    </table>  
+                    </div>
+                    <div class="col-sm-10 mt-3">
+                      <a href="..//export/exportPelangan.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
                     </div>
                   </div>
                 </div>
@@ -560,9 +565,11 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
 
     <!-- Main JS -->
     <script src="../assets/js/main.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
 
     <!-- Page JS -->
     <script src="../assets/js/dashboards-analytics.js"></script>
+    <script src="../DataTables/datatables.min.js"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
@@ -579,6 +586,12 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
       }
     });
     </script>
+
+<script>
+    $(document).ready(function(){
+        $('#tabel-data-pelangan').DataTable();
+    });
+</script>
 
   </body>
 </html>
