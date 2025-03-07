@@ -499,10 +499,10 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
 
                           ?>
                           <tr>
-                              <td><?=$i++;?></td>
-                              <td><?=$namaPelangan;?> </td>
-                              <td><?=$alamat;?></td>
-                              <td><?=$noTelepon;?></td>
+                              <td><?php echo $i++;?></td>
+                              <td><?php echo $namaPelangan;?> </td>
+                              <td><?php echo $alamat;?></td>
+                              <td><?php echo $noTelepon;?></td>
                               <td>edit</td>
                           </tr>  
 

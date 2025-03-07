@@ -1,6 +1,7 @@
 <?php
 require "../include/function.php";
 $barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
+
 ?>
 <!DOCTYPE html>
 
@@ -403,53 +404,117 @@ $barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
                 <h5 class="card-header">Data Barang</h5>
                 <div class="card-body">
                   <div class="table-responsive text-nowrap">
-                  <table id="tabel-data-barang" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                  <thead>
-                        <tr>
-                          <th>Kode Produk</th>
-                          <th>Nama Produk</th>
-                          <th>Harga</th>
-                          <th>Action</th>
-                        </tr>
-                  </thead>
-                      <tbody>
-                      <?php
-                          $get = mysqli_query($connection,"SELECT * FROM tbl_barang");
-                        
+                    <table id="tabel-data-barang" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                      <thead>
+                            <tr>
+                              <th>Kode Produk</th>
+                              <th>Nama Produk</th>
+                              <th>Harga</th>
+                              <th>Action</th>
+                            </tr>
+                      </thead>
+                          <tbody>
+                          <?php
+                              $get = mysqli_query($connection,"SELECT * FROM tbl_barang");
+                            
 
-                          while($barang=mysqli_fetch_array($get)){
-                          $kodeBarang = $barang['id_barang'];
-                          $namaBarang = $barang['nama_barang'];
-                          $harga = $barang['harga'];
+                              while($barang=mysqli_fetch_array($get)){
+                              $kodeBarang = $barang['id_barang'];
+                              $namaBarang = $barang['nama_barang'];
+                              $harga = $barang['harga'];
 
-                        ?>
-                        <tr>
-                            <td><?=$kodeBarang;?></td>
-                            <td><?=$namaBarang;?> </td>
-                            <td><?=$harga;?></td>
-                            <td>
-                              <div class="action">
-                              <a class="btn btn-success" href="" id="nisn"  data-toggle="modal" data-target="#">Edit</a>
-                                <a href="deleteMember.php?nisn=<?= $item["nisn"]; ?>" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus data member ?');"><i class="fa-solid fa-trash"></i></a>
-                              </div>
-                            </td>
+                            ?>
+                            <tr>
+                                <td><?=$kodeBarang; ?></td>
+                                <td><?=$namaBarang; ?> </td>
+                                <td><?=$harga; ?></td>
+                                <td>
+                                  <div class="action text-center">
+                                  <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit<?=$kodeBarang;?>">Edit</button>
+                                    <input type="hidden" name="idhapusBarang" value="<?=$kodeBarang;?>">
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?=$kodeBarang;?>">Delete</button>
+                                  </div>
+                                </td>
 
-                        </tr>  
+                                <!--Delete Modal-->
+                                <div class="modal fade" id="delete<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Barang</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body mb-3">
+                                        <h5>Apakah Anda Yakin, ingin menghapus <?=$namaBarang;?></h5>
+                                      <div class="modal-footer">
+                                      <input type="hidden" name="hapus" value="<?=$kodeBarang;?>">
+                                        <button type="button" class="btn btn-danger" name="haus_barang">Hapus</button>
+                                      </div>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!--/Delete Modal -->
+                                
+                            </tr>  
 
-                        <?php
-                          };//end of while                              
-                          ?>
-                      </tbody>
-                  </table>  
+                                <!-- Edit Modal -->
+                                <div class="modal fade" id="edit<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit Barang</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                      <form method="POST">
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Produk</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="basic-default-name" name="namabarang" value="<?=$namaBarang;?>" required/>
+                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-stok">Harga Barang</label>
+                                          <div class="col-sm-10">
+                                            <input type="number"
+                                             name = "harga"
+                                             id="basic-default-stok"
+                                              class="form-control phone-mask"
+                                              aria-describedby="basic-default-stok"
+                                              value="<?=$harga;?>"
+                                              required
+                                            />
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-10">
+                                        <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
+                                          <button type="submit" class="btn btn-primary" name="update_barang">Update</button>
+                                        </div>
+                                        </form>
+                                      </div>
+                                      <div class="modal-footer">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                <!-- /Edit Modal-->
+
+                            <?php
+                              };//end of while                              
+                              ?>
+                          </tbody>
+                    </table>  
                   </div>
                   <div class="col-sm-10 mt-3">
                       <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                    </div
-
+                  </div
                 </div>
               </div>
 
-
+          
               </div>
             </div>
             <!-- / Content -->

@@ -20,7 +20,23 @@ function tambahBarang($dataBarang) {
   mysqli_query($connection, $queryInsertDataBarang);
   return mysqli_affected_rows($connection);
   
-}       
+}  
+
+// Updete data Barang
+if(isset($_POST['update_barang'])){
+  $kodeBarang = $_POST['idBarang'];
+  $namabarang = $_POST['namabarang'];
+  $harga = $_POST['harga'];
+
+  $update = mysqli_query($connection,"UPDATE tbl_barang SET nama_barang='$namabarang', harga='$harga' WHERE id_barang='$kodeBarang'");
+  if($update){
+    header('location:../html/laporanBarang.php');
+    } else {
+      echo"<script>
+      alert('Data Barang gagal diupdate!');
+      </script>";
+    }
+}
 
 
 // Menambahkan data Pelangan 
