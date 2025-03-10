@@ -38,6 +38,8 @@ if(isset($_POST['update_barang'])){
     }
 }
 
+// delete data barang
+
 
 // Menambahkan data Pelangan 
 function tambahPelangan($dataPelangan) {

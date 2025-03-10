@@ -1,22 +1,13 @@
 <?php
-require "../include/function.php";
-$barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
+session_start();
 
-if(isset($_POST['hapus_barang'])){
-  $kodeBarang = $_POST['idBarang'];
-
-  $hapus = mysqli_query($connection,"DELETE FROM tbl_barang WHERE id_barang='$kodeBarang'");
-  if($hapus){
-    header('location:../html/laporanBarang.php');
-  }else{
-    echo"<script>
-      alert('Data Barang gagal dihapus!');
-      </script>";
-  }
-} 
+    if(isset($_SESSION["login"]) ) {
+        header("Location: ../admin/index.php");
+        exit;
+      }
 ?>
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <!-- =========================================================
 * Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
 ==============================================================
@@ -73,9 +64,6 @@ if(isset($_POST['hapus_barang'])){
     <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
 
     <!-- Page CSS -->
-    <link rel="stylesheet" href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
-    <link href="../DataTables/datatables.min.css" rel="stylesheet">
-
 
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
@@ -89,7 +77,7 @@ if(isset($_POST['hapus_barang'])){
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
-        
+
         <!-- Menu -->
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
@@ -108,7 +96,7 @@ if(isset($_POST['hapus_barang'])){
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item ">
+            <li class="menu-item active">
               <a href="index.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
@@ -127,18 +115,25 @@ if(isset($_POST['hapus_barang'])){
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Master Data</span>
             </li>
-            <!-- data barang -->
+            <!-- data User -->
             <li class="menu-item">
-              <a href="dataBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-package' ></i>
-                <div data-i18n="Analytics">Input Barang</div>
+              <a href="dataUser.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bxs-user-detail'></i>
+                <div data-i18n="Analytics">Data User</div>
               </a>
             </li>
-             <!-- data pelangan -->
+             <!-- data Katagori -->
              <li class="menu-item">
-              <a href="dataPelangan.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bxs-user-account'></i>
-                <div data-i18n="Analytics">Input Pelangan</div>
+              <a href="dataKatagori.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-copy-alt'></i>
+                <div data-i18n="Analytics">Data Katogori Usaha</div>
+              </a>
+            </li>
+             <!-- data rovinsi -->
+             <li class="menu-item">
+              <a href="dataProvinsi.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-map'></i>
+                <div data-i18n="Analytics">Data Provinsi</div>
               </a>
             </li>
 
@@ -146,18 +141,11 @@ if(isset($_POST['hapus_barang'])){
               <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Laporan</span>
             </li>
-            <!-- laporan barang -->
-            <li class="menu-item active">
-              <a href="laporanBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-file'></i>
-                <div data-i18n="Analytics">Laporan Barang</div>
-              </a>
-            </li>
-             <!-- laporan tansaksi -->
-             <li class="menu-item">
-              <a href="laporanTransaksi.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-box'></i>
-                <div data-i18n="Analytics">Laporan Transaksi</div>
+            <!-- laporan masange -->
+            <li class="menu-item">
+              <a href="laporanPesan.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-archive-in'></i>
+                <div data-i18n="Analytics">Data Message</div>
               </a>
             </li>
 
@@ -405,130 +393,178 @@ if(isset($_POST['hapus_barang'])){
         <!-- Layout container -->
         <div class="layout-page">
 
+          <!-- Navbar -->
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar">
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Search -->
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                  <i class="bx bx-search fs-4 lh-0"></i>
+                  <input
+                    type="text"
+                    class="form-control border-0 shadow-none"
+                    placeholder="Search..."
+                    aria-label="Search..."
+                  />
+                </div>
+              </div>
+              <!-- /Search -->
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                      <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                          <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-online">
+                              <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                            </div>
+                          </div>
+                          <div class="flex-grow-1">
+                            <span class="fw-semibold d-block"><?php echo $_SESSION['username'] = $username;?></span>
+                            <small class="text-muted">Admin</small>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <i class="bx bx-user me-2"></i>
+                        <span class="align-middle">My Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <i class="bx bx-cog me-2"></i>
+                        <span class="align-middle">Settings</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <span class="d-flex align-items-center align-middle">
+                          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
+                          <span class="flex-grow-1 align-middle">Billing</span>
+                          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="auth-login-basic.html">
+                        <i class="bx bx-power-off me-2"></i>
+                        <span class="align-middle">Log Out</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ User -->
+              </ul>
+            </div>
+          </nav>
+
+          <!-- / Navbar -->
+
           <!-- Content wrapper -->
           <div class="content-wrapper">
             <!-- Content -->
-
             <div class="container-xxl flex-grow-1 container-p-y">
               <div class="row">
 
-              <div class="card">
-                <h5 class="card-header">Data Barang</h5>
-                <div class="card-body">
-                  <div class="table-responsive text-nowrap">
-                    <table id="tabel-data-barang" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                      <thead>
-                            <tr>
-                              <th>Kode Produk</th>
-                              <th>Nama Produk</th>
-                              <th>Harga</th>
-                              <th>Action</th>
-                            </tr>
-                      </thead>
-                          <tbody>
-                          <?php
-                              $get = mysqli_query($connection,"SELECT * FROM tbl_barang");
-                            
-
-                              while($barang=mysqli_fetch_array($get)){
-                              $kodeBarang = $barang['id_barang'];
-                              $namaBarang = $barang['nama_barang'];
-                              $harga = $barang['harga'];
-
-                            ?>
-                            <tr>
-                                <td><?=$kodeBarang; ?></td>
-                                <td><?=$namaBarang; ?> </td>
-                                <td><?=$harga; ?></td>
-                                <td>
-                                  <div class="action text-center">
-                                  <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit<?=$kodeBarang;?>">Edit</button>
-  
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?=$kodeBarang;?>">Delete</button>
-                                  </div>
-                                </td>
-
-                                <!--Delete Modal-->
-                                <div class="modal fade" id="delete<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Barang</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <form method="post">
-                                      <div class="modal-body mb-3">
-                                          <h5>Apakah Anda Yakin, ingin menghapus <?=$namaBarang;?></h5>
-                                          <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                            <button type="button" class="btn btn-danger" name="hapus_barang">Hapus</button>
-                                     </div>
-                                     </form>
-                                      <div class="modal-footer">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!--/Delete Modal -->
-                                
-                            </tr>  
-
-                                <!-- Edit Modal -->
-                                <div class="modal fade" id="edit<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit Barang</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <div class="modal-body">
-                                      <form method="POST">
-                                        <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Produk</label>
-                                          <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="basic-default-name" name="namabarang" value="<?=$namaBarang;?>" required/>
-                                          </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-stok">Harga Barang</label>
-                                          <div class="col-sm-10">
-                                            <input type="number"
-                                             name = "harga"
-                                             id="basic-default-stok"
-                                              class="form-control phone-mask"
-                                              aria-describedby="basic-default-stok"
-                                              value="<?=$harga;?>"
-                                              required
-                                            />
-                                          </div>
-                                        </div>
-                                        <div class="col-sm-10">
-                                        <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                          <button type="submit" class="btn btn-primary" name="update_barang">Update</button>
-                                        </div>
-                                        </form>
-                                      </div>
-                                      <div class="modal-footer">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                <!-- /Edit Modal-->
-
-                            <?php
-                              };//end of while                              
-                              ?>
-                          </tbody>
-                    </table>  
+              <!-- Grid Card -->
+              <h4 class="fw-bold py-3 mb-1"><span class="text-muted fw-light">Promosi & Informasi</h4>
+              <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+                <div class="col">
+                  <div class="card h-100">
+                    <img class="card-img-top" src="../assets/img/elements/2.jpg" alt="Card image cap" />
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">
+                        This is a longer card with supporting text below as a natural lead-in to additional content.
+                        This content is a little bit longer.
+                      </p>
+                    </div>
                   </div>
-                  <div class="col-sm-10 mt-3">
-                      <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                  </div
+                </div>
+                <div class="col">
+                  <div class="card h-100">
+                    <img class="card-img-top" src="../assets/img/elements/13.jpg" alt="Card image cap" />
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">
+                        This is a longer card with supporting text below as a natural lead-in to additional content.
+                        This content is a little bit longer.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card h-100">
+                    <img class="card-img-top" src="../assets/img/elements/4.jpg" alt="Card image cap" />
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">
+                        This is a longer card with supporting text below as a natural lead-in to additional content.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card h-100">
+                    <img class="card-img-top" src="../assets/img/elements/18.jpg" alt="Card image cap" />
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">
+                        This is a longer card with supporting text below as a natural lead-in to additional content.
+                        This content is a little bit longer.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card h-100">
+                    <img class="card-img-top" src="../assets/img/elements/19.jpg" alt="Card image cap" />
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">
+                        This is a longer card with supporting text below as a natural lead-in to additional content.
+                        This content is a little bit longer.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card h-100">
+                    <img class="card-img-top" src="../assets/img/elements/20.jpg" alt="Card image cap" />
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">
+                        This is a longer card with supporting text below as a natural lead-in to additional content.
+                        This content is a little bit longer.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-          
               </div>
             </div>
             <!-- / Content -->
@@ -541,7 +577,8 @@ if(isset($_POST['hapus_barang'])){
                   <script>
                     document.write(new Date().getFullYear());
                   </script>
-                  , made with ❤️ by Nanda & Nyla || ITB AAS Indonesia                </div>
+                  , made with ❤️ by Nanda & Nyla
+                </div>
               </div>
             </footer>
             <!-- / Footer -->
@@ -557,7 +594,6 @@ if(isset($_POST['hapus_barang'])){
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
     <!-- / Layout wrapper -->
-
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="../assets/vendor/libs/jquery/jquery.js"></script>
@@ -577,19 +613,7 @@ if(isset($_POST['hapus_barang'])){
     <!-- Page JS -->
     <script src="../assets/js/dashboards-analytics.js"></script>
 
-    <script src="../DataTables/datatables.min.js"></script>
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-
-
-
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-
-    <script>
-    $(document).ready(function(){
-        $('#tabel-data-barang').DataTable();
-    });
-</script>
-
   </body>
 </html>

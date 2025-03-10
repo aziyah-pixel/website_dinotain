@@ -1,19 +1,21 @@
 <?php
-require "../include/function.php";
-$barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
+require "../include/koneksi.php";
+require "function.php";
 
-if(isset($_POST['hapus_barang'])){
-  $kodeBarang = $_POST['idBarang'];
+$provinsi = mysqli_query($connection,"SELECT * FROM tbl_provinsi");
 
-  $hapus = mysqli_query($connection,"DELETE FROM tbl_barang WHERE id_barang='$kodeBarang'");
-  if($hapus){
-    header('location:../html/laporanBarang.php');
-  }else{
-    echo"<script>
-      alert('Data Barang gagal dihapus!');
-      </script>";
+if(isset($_POST["tambahprovinsi"]) ) {
+  
+  if(tambahProvinsi($_POST) > 0) {
+    header('location: dataProvinsi.php');
+  }else {
+    echo "<script>
+    alert('Data Provinsi gagal ditambahkan!');
+    </script>";
   }
-} 
+
+}
+
 ?>
 <!DOCTYPE html>
 
@@ -56,8 +58,7 @@ if(isset($_POST['hapus_barang'])){
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
+      rel="stylesheet"/>
 
     <!-- Icons. Uncomment required icon fonts -->
     <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css" />
@@ -80,6 +81,9 @@ if(isset($_POST['hapus_barang'])){
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../assets/js/config.js"></script>
@@ -90,7 +94,7 @@ if(isset($_POST['hapus_barang'])){
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
         
-        <!-- Menu -->
+          <!-- Menu -->
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
           <a href="index.php" class="app-brand-link">
@@ -127,18 +131,26 @@ if(isset($_POST['hapus_barang'])){
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Master Data</span>
             </li>
-            <!-- data barang -->
+            <!-- data User -->
             <li class="menu-item">
-              <a href="dataBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-package' ></i>
-                <div data-i18n="Analytics">Input Barang</div>
+              <a href="dataUser.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bxs-user-detail'></i>
+                <div data-i18n="Analytics">Data User</div>
               </a>
             </li>
-             <!-- data pelangan -->
-             <li class="menu-item">
-              <a href="dataPelangan.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bxs-user-account'></i>
-                <div data-i18n="Analytics">Input Pelangan</div>
+             <!-- data Katagori -->
+            <li class="menu-item ">
+             <li class="menu-item ">
+              <a href="dataKatagori.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-copy-alt'></i>
+                <div data-i18n="Analytics">Data Katogori Usaha</div>
+              </a>
+            </li>
+             <!-- data rovinsi -->
+             <li class="menu-item active">
+              <a href="dataProvinsi.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-map'></i>
+                <div data-i18n="Analytics">Data Provinsi</div>
               </a>
             </li>
 
@@ -146,18 +158,11 @@ if(isset($_POST['hapus_barang'])){
               <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Laporan</span>
             </li>
-            <!-- laporan barang -->
-            <li class="menu-item active">
-              <a href="laporanBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-file'></i>
-                <div data-i18n="Analytics">Laporan Barang</div>
-              </a>
-            </li>
-             <!-- laporan tansaksi -->
-             <li class="menu-item">
-              <a href="laporanTransaksi.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-box'></i>
-                <div data-i18n="Analytics">Laporan Transaksi</div>
+            <!-- laporan masange -->
+            <li class="menu-item">
+              <a href="laporanPesan.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-archive-in'></i>
+                <div data-i18n="Analytics">Data Message</div>
               </a>
             </li>
 
@@ -399,8 +404,9 @@ if(isset($_POST['hapus_barang'])){
               </a>
             </li>
           </ul>
-        </aside>
+      </aside>
         <!-- / Menu -->
+
 
         <!-- Layout container -->
         <div class="layout-page">
@@ -413,98 +419,135 @@ if(isset($_POST['hapus_barang'])){
               <div class="row">
 
               <div class="card">
-                <h5 class="card-header">Data Barang</h5>
-                <div class="card-body">
-                  <div class="table-responsive text-nowrap">
-                    <table id="tabel-data-barang" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                      <thead>
-                            <tr>
-                              <th>Kode Produk</th>
-                              <th>Nama Produk</th>
-                              <th>Harga</th>
-                              <th>Action</th>
-                            </tr>
-                      </thead>
-                          <tbody>
-                          <?php
-                              $get = mysqli_query($connection,"SELECT * FROM tbl_barang");
-                            
+                <h5 class="card-header">Data Provinsi</h5>
 
-                              while($barang=mysqli_fetch_array($get)){
-                              $kodeBarang = $barang['id_barang'];
-                              $namaBarang = $barang['nama_barang'];
-                              $harga = $barang['harga'];
-
-                            ?>
-                            <tr>
-                                <td><?=$kodeBarang; ?></td>
-                                <td><?=$namaBarang; ?> </td>
-                                <td><?=$harga; ?></td>
-                                <td>
-                                  <div class="action text-center">
-                                  <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit<?=$kodeBarang;?>">Edit</button>
-  
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?=$kodeBarang;?>">Delete</button>
-                                  </div>
-                                </td>
-
-                                <!--Delete Modal-->
-                                <div class="modal fade" id="delete<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="col-sm-10 mt-3">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahrovinsi">Tambah Data</button>
+                </div>
+                             <!-- Tambah Modal -->
+                               <div class="modal fade" id="tambahrovinsi" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                   <div class="modal-dialog">
                                     <div class="modal-content">
                                       <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Barang</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Tambah Data Provinsi</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                       </div>
+                                      <div class="modal-body">
                                       <form method="post">
-                                      <div class="modal-body mb-3">
-                                          <h5>Apakah Anda Yakin, ingin menghapus <?=$namaBarang;?></h5>
-                                          <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                            <button type="button" class="btn btn-danger" name="hapus_barang">Hapus</button>
-                                     </div>
-                                     </form>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-kode">ID Provinsi</label>
+                                          <div class="col-sm-10">
+                                            <input 
+                                            type="text" 
+                                            class="form-control" 
+                                            name = "idprovinsi"
+                                            id="basic-default-kode" 
+                                            aria-describedby="additional_kode_information"/>
+                                            <span id="additional_kode_information" class="form-text">
+                                                <em>ID Provinsi boleh dikosongi</em>
+                                            </span> 
+                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Provinsi</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="basic-default-name" name="namaprovinsi" placeholder="" required/>
+                                          </div>
+                                        </div>
+                                        <div class="row justify-content-end">
+                                          <div class="col-sm-10">
+                                            <button type="submit" class="btn btn-primary" name="tambahprovinsi">Simpan</button>
+                                            <input type="reset" class="btn btn-warning" value="Reset">
+                                          </div>
+                                        </div>
+                                      </form>
+
+                                      </div>
                                       <div class="modal-footer">
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                                <!--/Delete Modal -->
+                                
+                              <!-- /tambah Modal-->
+
+
+
+                <div class="card-body">
+                  <div class="table-responsive text-nowrap">
+                    <table id="tabel-data-provinsi" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                      <thead>
+                            <tr>
+                              <th>ID Provinsi</th>
+                              <th>Nama Provinsi</th>
+                              <th>Action</th>
+                            </tr>
+                      </thead>
+                          <tbody>
+                          <?php
+                              $get = mysqli_query($connection,"SELECT * FROM tbl_provinsi");
+                            
+
+                              while($provinsi=mysqli_fetch_array($get)){
+                              $idprovinsi = $provinsi['id_provinsi'];
+                              $namaprovinsi = $provinsi['provinsi'];
+                            ?>
+                            <tr>
+                                <td><?=$idprovinsi; ?></td>
+                                <td><?=$namaprovinsi; ?> </td>
+                                <td>
+                                  <div class="action text-center">
+                                  <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editprovinsi<?=$idprovinsi;?>">Edit</button>
+  
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteprovinsi<?=$idprovinsi;?>">Delete</button>
+                                  </div>
+                              </td>
+
+                                <!--Delete Modal-->
+                                <div class="modal fade" id="deleteprovinsi<?=$idprovinsi;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hapus Data Provinsi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body mb-3">
+                    <h5>Apakah Anda Yakin, ingin menghapus <?=$namaprovinsi;?></h5>
+                    <input type="hidden" name="idProvinsi" value="<?=$idprovinsi;?>">
+                    <button type="submit" class="btn btn-danger" name="hapus_provinsi">Hapus</button>
+                </div>
+            </form>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<!--/Delete Modal -->
+                            
                                 
                             </tr>  
 
                                 <!-- Edit Modal -->
-                                <div class="modal fade" id="edit<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="editprovinsi<?=$idprovinsi;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                   <div class="modal-dialog">
                                     <div class="modal-content">
                                       <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit Barang</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit Data Provinsi</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                       </div>
                                       <div class="modal-body">
                                       <form method="POST">
                                         <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Produk</label>
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Provinsi</label>
                                           <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="basic-default-name" name="namabarang" value="<?=$namaBarang;?>" required/>
-                                          </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-stok">Harga Barang</label>
-                                          <div class="col-sm-10">
-                                            <input type="number"
-                                             name = "harga"
-                                             id="basic-default-stok"
-                                              class="form-control phone-mask"
-                                              aria-describedby="basic-default-stok"
-                                              value="<?=$harga;?>"
-                                              required
-                                            />
+                                            <input type="text" class="form-control" id="basic-default-name" name="namaProvinsi" value="<?=$namaprovinsi;?>" required/>
                                           </div>
                                         </div>
                                         <div class="col-sm-10">
-                                        <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                          <button type="submit" class="btn btn-primary" name="update_barang">Update</button>
+                                        <input type="hidden" name="id_provinsi" value="<?=$idprovinsi;?>">
+                                          <button type="submit" class="btn btn-primary" name="update_provinsi">Update</button>
                                         </div>
                                         </form>
                                       </div>
@@ -522,9 +565,6 @@ if(isset($_POST['hapus_barang'])){
                           </tbody>
                     </table>  
                   </div>
-                  <div class="col-sm-10 mt-3">
-                      <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                  </div
                 </div>
               </div>
 
@@ -587,7 +627,7 @@ if(isset($_POST['hapus_barang'])){
 
     <script>
     $(document).ready(function(){
-        $('#tabel-data-barang').DataTable();
+        $('#tabel-data-provinsi').DataTable();
     });
 </script>
 

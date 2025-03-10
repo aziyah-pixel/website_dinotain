@@ -1,19 +1,8 @@
 <?php
-require "../include/function.php";
-$barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
+require "../include/koneksi.php";
+require "function.php";
+$user = mysqli_query($connection,"SELECT id_user, full_nama, nama_usaha, email, katagori_usaha, no_tel, alamat FROM tbl_user WHERE level='user'");
 
-if(isset($_POST['hapus_barang'])){
-  $kodeBarang = $_POST['idBarang'];
-
-  $hapus = mysqli_query($connection,"DELETE FROM tbl_barang WHERE id_barang='$kodeBarang'");
-  if($hapus){
-    header('location:../html/laporanBarang.php');
-  }else{
-    echo"<script>
-      alert('Data Barang gagal dihapus!');
-      </script>";
-  }
-} 
 ?>
 <!DOCTYPE html>
 
@@ -127,18 +116,25 @@ if(isset($_POST['hapus_barang'])){
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Master Data</span>
             </li>
-            <!-- data barang -->
-            <li class="menu-item">
-              <a href="dataBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-package' ></i>
-                <div data-i18n="Analytics">Input Barang</div>
+            <!-- data User -->
+            <li class="menu-item active">
+              <a href="dataUser.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bxs-user-detail'></i>
+                <div data-i18n="Analytics">Data User</div>
               </a>
             </li>
-             <!-- data pelangan -->
+             <!-- data Katagori -->
              <li class="menu-item">
-              <a href="dataPelangan.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bxs-user-account'></i>
-                <div data-i18n="Analytics">Input Pelangan</div>
+              <a href="dataKatagori.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-copy-alt'></i>
+                <div data-i18n="Analytics">Data Katogori Usaha</div>
+              </a>
+            </li>
+             <!-- data rovinsi -->
+             <li class="menu-item">
+              <a href="dataProvinsi.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-map'></i>
+                <div data-i18n="Analytics">Data Provinsi</div>
               </a>
             </li>
 
@@ -146,18 +142,11 @@ if(isset($_POST['hapus_barang'])){
               <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Laporan</span>
             </li>
-            <!-- laporan barang -->
-            <li class="menu-item active">
-              <a href="laporanBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-file'></i>
-                <div data-i18n="Analytics">Laporan Barang</div>
-              </a>
-            </li>
-             <!-- laporan tansaksi -->
-             <li class="menu-item">
-              <a href="laporanTransaksi.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-box'></i>
-                <div data-i18n="Analytics">Laporan Transaksi</div>
+            <!-- laporan masange -->
+            <li class="menu-item">
+              <a href="laporanPesan.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-archive-in'></i>
+                <div data-i18n="Analytics">Data Message</div>
               </a>
             </li>
 
@@ -413,98 +402,130 @@ if(isset($_POST['hapus_barang'])){
               <div class="row">
 
               <div class="card">
-                <h5 class="card-header">Data Barang</h5>
+                <h5 class="card-header">Data User</h5>
                 <div class="card-body">
                   <div class="table-responsive text-nowrap">
-                    <table id="tabel-data-barang" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                    <table id="tabel-data-user" class="table table-striped table-bordered" width="100%" cellspacing="0">
                       <thead>
                             <tr>
-                              <th>Kode Produk</th>
-                              <th>Nama Produk</th>
-                              <th>Harga</th>
+                              <th>No </th>
+                              <th>Nama Pemilik</th>
+                              <th>Nama Usaha</th>
+                              <th>Katagori Usaha</th>
+                              <th>Email</th>
+                              <th>Alamat</th>
+                              <th>No Telepon</th>
                               <th>Action</th>
                             </tr>
                       </thead>
                           <tbody>
                           <?php
-                              $get = mysqli_query($connection,"SELECT * FROM tbl_barang");
-                            
+                              $get = mysqli_query($connection,"SELECT id_user, full_nama, nama_usaha, katagori_usaha, email, no_tel, alamat FROM tbl_user WHERE level='user'");
+                              $i = 1; //penomoran
 
-                              while($barang=mysqli_fetch_array($get)){
-                              $kodeBarang = $barang['id_barang'];
-                              $namaBarang = $barang['nama_barang'];
-                              $harga = $barang['harga'];
+                              while($user=mysqli_fetch_array($get)){
+                              $iduser = $user['id_user'];
+                              $namauser = $user['full_nama'];
+                              $namausaha = $user['nama_usaha'];
+                              $katagori = $user['katagori_usaha'];
+                              $email = $user['email'];
+                              $alamat = $user['alamat'];
+                              $telepon = $user['no_tel'];
 
                             ?>
                             <tr>
-                                <td><?=$kodeBarang; ?></td>
-                                <td><?=$namaBarang; ?> </td>
-                                <td><?=$harga; ?></td>
+                              <td><?php echo $i++; ?></td>
+                                <td><?=$namauser; ?></td>
+                                <td><?=$namausaha; ?> </td>
+                                <td><?=$katagori; ?></td>
+                                <td><?=$email; ?></td>
+                                <td><?=$alamat; ?></td>
+                                <td><?=$telepon; ?></td>
                                 <td>
                                   <div class="action text-center">
                                   <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit<?=$kodeBarang;?>">Edit</button>
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edituser<?=$iduser;?>">Edit</button>
   
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?=$kodeBarang;?>">Delete</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteuser<?=$iduser;?>">Delete</button>
                                   </div>
                                 </td>
 
                                 <!--Delete Modal-->
-                                <div class="modal fade" id="delete<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Barang</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <form method="post">
-                                      <div class="modal-body mb-3">
-                                          <h5>Apakah Anda Yakin, ingin menghapus <?=$namaBarang;?></h5>
-                                          <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                            <button type="button" class="btn btn-danger" name="hapus_barang">Hapus</button>
-                                     </div>
-                                     </form>
-                                      <div class="modal-footer">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!--/Delete Modal -->
+<div class="modal fade" id="deleteuser<?=$iduser;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hapus User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body mb-3">
+                    <h5>Apakah Anda Yakin, ingin menghapus <?=$namauser;?></h5>
+                    <input type="hidden" name="id_user" value="<?=$iduser;?>">
+                    <button type="submit" class="btn btn-danger" name="hapus_user">Hapus</button>
+                </div>
+            </form>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<!--/Delete Modal -->
+                              
                                 
                             </tr>  
 
                                 <!-- Edit Modal -->
-                                <div class="modal fade" id="edit<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="edituser<?=$iduser;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                   <div class="modal-dialog">
                                     <div class="modal-content">
                                       <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit Barang</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                       </div>
                                       <div class="modal-body">
                                       <form method="POST">
                                         <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Produk</label>
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Pemilik</label>
                                           <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="basic-default-name" name="namabarang" value="<?=$namaBarang;?>" required/>
+                                            <input type="text" class="form-control" id="basic-default-name" name="namauser" value="<?=$namauser;?>" required/>
                                           </div>
                                         </div>
                                         <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-stok">Harga Barang</label>
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Usaha</label>
                                           <div class="col-sm-10">
-                                            <input type="number"
-                                             name = "harga"
-                                             id="basic-default-stok"
-                                              class="form-control phone-mask"
-                                              aria-describedby="basic-default-stok"
-                                              value="<?=$harga;?>"
-                                              required
-                                            />
+                                            <input type="text" class="form-control" id="basic-default-name" name="namausaha" value="<?=$namausaha;?>" required/>
                                           </div>
                                         </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Katagori Usaha</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="basic-default-name" name="katagori" value="<?=$katagori;?>" required/>
+                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Email</label>
+                                          <div class="col-sm-10">
+                                            <input type="email" class="form-control" id="basic-default-name" name="email" value="<?=$email;?>" required/>
+                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Alamat</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="basic-default-name" name="alamat" value="<?=$alamat;?>" required/>
+                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">No Telepon</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="basic-default-name" name="telepon" value="<?=$telepon;?>" required/>
+                                          </div>
+                                        </div>
+
+
                                         <div class="col-sm-10">
-                                        <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                          <button type="submit" class="btn btn-primary" name="update_barang">Update</button>
+                                        <input type="hidden" name="iduser" value="<?=$iduser;?>">
+                                          <button type="submit" class="btn btn-primary" name="update_user">Update</button>
                                         </div>
                                         </form>
                                       </div>
@@ -522,9 +543,6 @@ if(isset($_POST['hapus_barang'])){
                           </tbody>
                     </table>  
                   </div>
-                  <div class="col-sm-10 mt-3">
-                      <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                  </div
                 </div>
               </div>
 
@@ -587,7 +605,7 @@ if(isset($_POST['hapus_barang'])){
 
     <script>
     $(document).ready(function(){
-        $('#tabel-data-barang').DataTable();
+        $('#tabel-data-user').DataTable();
     });
 </script>
 

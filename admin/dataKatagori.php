@@ -1,19 +1,20 @@
 <?php
-require "../include/function.php";
-$barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
+require "../include/koneksi.php";
+require "function.php";
+$katagori = mysqli_query($connection,"SELECT * FROM tbl_katagori");
 
-if(isset($_POST['hapus_barang'])){
-  $kodeBarang = $_POST['idBarang'];
-
-  $hapus = mysqli_query($connection,"DELETE FROM tbl_barang WHERE id_barang='$kodeBarang'");
-  if($hapus){
-    header('location:../html/laporanBarang.php');
-  }else{
-    echo"<script>
-      alert('Data Barang gagal dihapus!');
-      </script>";
+if(isset($_POST["tambahkatagori"]) ) {
+  
+  if(tambahKatagori($_POST) > 0) {
+    header('location: dataKatagori.php');
+  }else {
+    echo "<script>
+    alert('Data Katagori Usaha gagal ditambahkan!');
+    </script>";
   }
-} 
+
+}
+
 ?>
 <!DOCTYPE html>
 
@@ -90,8 +91,8 @@ if(isset($_POST['hapus_barang'])){
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
         
-        <!-- Menu -->
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+       <!-- Menu -->
+       <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
           <a href="index.php" class="app-brand-link">
               <span class="app-brand-logo demo">
@@ -127,18 +128,26 @@ if(isset($_POST['hapus_barang'])){
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Master Data</span>
             </li>
-            <!-- data barang -->
+            <!-- data User -->
             <li class="menu-item">
-              <a href="dataBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-package' ></i>
-                <div data-i18n="Analytics">Input Barang</div>
+              <a href="dataUser.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bxs-user-detail'></i>
+                <div data-i18n="Analytics">Data User</div>
               </a>
             </li>
-             <!-- data pelangan -->
+             <!-- data Katagori -->
+            <li class="menu-item active">
+             <li class="menu-item ">
+              <a href="dataKatagori.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-copy-alt'></i>
+                <div data-i18n="Analytics">Data Katogori Usaha</div>
+              </a>
+            </li>
+             <!-- data rovinsi -->
              <li class="menu-item">
-              <a href="dataPelangan.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bxs-user-account'></i>
-                <div data-i18n="Analytics">Input Pelangan</div>
+              <a href="dataProvinsi.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-map'></i>
+                <div data-i18n="Analytics">Data Provinsi</div>
               </a>
             </li>
 
@@ -146,18 +155,11 @@ if(isset($_POST['hapus_barang'])){
               <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Laporan</span>
             </li>
-            <!-- laporan barang -->
-            <li class="menu-item active">
-              <a href="laporanBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-file'></i>
-                <div data-i18n="Analytics">Laporan Barang</div>
-              </a>
-            </li>
-             <!-- laporan tansaksi -->
-             <li class="menu-item">
-              <a href="laporanTransaksi.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-box'></i>
-                <div data-i18n="Analytics">Laporan Transaksi</div>
+            <!-- laporan masange -->
+            <li class="menu-item">
+              <a href="laporanPesan.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-archive-in'></i>
+                <div data-i18n="Analytics">Data Message</div>
               </a>
             </li>
 
@@ -399,7 +401,7 @@ if(isset($_POST['hapus_barang'])){
               </a>
             </li>
           </ul>
-        </aside>
+      </aside>
         <!-- / Menu -->
 
         <!-- Layout container -->
@@ -413,68 +415,118 @@ if(isset($_POST['hapus_barang'])){
               <div class="row">
 
               <div class="card">
-                <h5 class="card-header">Data Barang</h5>
-                <div class="card-body">
-                  <div class="table-responsive text-nowrap">
-                    <table id="tabel-data-barang" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                      <thead>
-                            <tr>
-                              <th>Kode Produk</th>
-                              <th>Nama Produk</th>
-                              <th>Harga</th>
-                              <th>Action</th>
-                            </tr>
-                      </thead>
-                          <tbody>
-                          <?php
-                              $get = mysqli_query($connection,"SELECT * FROM tbl_barang");
-                            
+                <h5 class="card-header">Data Katagori</h5>
 
-                              while($barang=mysqli_fetch_array($get)){
-                              $kodeBarang = $barang['id_barang'];
-                              $namaBarang = $barang['nama_barang'];
-                              $harga = $barang['harga'];
-
-                            ?>
-                            <tr>
-                                <td><?=$kodeBarang; ?></td>
-                                <td><?=$namaBarang; ?> </td>
-                                <td><?=$harga; ?></td>
-                                <td>
-                                  <div class="action text-center">
-                                  <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit<?=$kodeBarang;?>">Edit</button>
-  
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?=$kodeBarang;?>">Delete</button>
-                                  </div>
-                                </td>
-
-                                <!--Delete Modal-->
-                                <div class="modal fade" id="delete<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="col-sm-10 mt-3">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahKatagori">Tambah Data</button>
+                </div>
+                             <!-- Tambah Modal -->
+                               <div class="modal fade" id="tambahKatagori" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                   <div class="modal-dialog">
                                     <div class="modal-content">
                                       <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Barang</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Tambah Katagori</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                       </div>
+                                      <div class="modal-body">
                                       <form method="post">
-                                      <div class="modal-body mb-3">
-                                          <h5>Apakah Anda Yakin, ingin menghapus <?=$namaBarang;?></h5>
-                                          <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                            <button type="button" class="btn btn-danger" name="hapus_barang">Hapus</button>
-                                     </div>
-                                     </form>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-kode">ID Katagori</label>
+                                          <div class="col-sm-10">
+                                            <input 
+                                            type="text" 
+                                            class="form-control" 
+                                            name = "idkatagori"
+                                            id="basic-default-kode" 
+                                            aria-describedby="additional_kode_information"
+                      
+                                            required/>
+                                            <span id="additional_kode_information" class="form-text">
+                                                For example: K01, <em>Kode barang tidak boleh sama</em>
+                                            </span> 
+                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Katagori</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="basic-default-name" name="namakatagori" placeholder="" required/>
+                                          </div>
+                                        </div>
+                                        <div class="row justify-content-end">
+                                          <div class="col-sm-10">
+                                            <button type="submit" class="btn btn-primary" name="tambahkatagori">Simpan</button>
+                                            <input type="reset" class="btn btn-warning" value="Reset">
+                                          </div>
+                                        </div>
+                                      </form>
+
+                                      </div>
                                       <div class="modal-footer">
                                       </div>
                                     </div>
                                   </div>
                                 </div>
+                                
+                              <!-- /tambah Modal-->
+
+                <div class="card-body">
+                  <div class="table-responsive text-nowrap">
+                    <table id="tabel-data-katagori" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                      <thead>
+                            <tr>
+                              <th>Kode Katagori</th>
+                              <th>Nama Katagori</th>
+                              <th>Action</th>
+                            </tr>
+                      </thead>
+                          <tbody>
+                          <?php
+                              $get = mysqli_query($connection,"SELECT * FROM tbl_katagori");
+                            
+
+                              while($katagori=mysqli_fetch_array($get)){
+                              $idKatagori = $katagori['id_katagori'];
+                              $namaKatagori = $katagori['nama_katagori'];
+
+                            ?>
+                            <tr>
+                                <td><?=$idKatagori; ?></td>
+                                <td><?=$namaKatagori; ?> </td>
+                                <td>
+                                  <div class="action text-center">
+                                  <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editkatagori<?=$idKatagori;?>">Edit</button>
+  
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletekatagori<?=$idKatagori;?>">Delete</button>
+                                  </div>
+                                </td>
+
+                                <!--Delete Modal-->
+                                <div class="modal fade" id="deletekatagori<?=$idKatagori;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hapus User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body mb-3">
+                    <h5>Apakah Anda Yakin, ingin menghapus <?=$namaKatagori;?></h5>
+                    <input type="hidden" name="idKatagori" value="<?=$idKatagori;?>">
+                    <button type="submit" class="btn btn-danger" name="hapus_Katagori">Hapus</button>
+                </div>
+            </form>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
                                 <!--/Delete Modal -->
                                 
                             </tr>  
 
                                 <!-- Edit Modal -->
-                                <div class="modal fade" id="edit<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="editkatagori<?=$idKatagori;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                   <div class="modal-dialog">
                                     <div class="modal-content">
                                       <div class="modal-header">
@@ -484,27 +536,14 @@ if(isset($_POST['hapus_barang'])){
                                       <div class="modal-body">
                                       <form method="POST">
                                         <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Produk</label>
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Katagori</label>
                                           <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="basic-default-name" name="namabarang" value="<?=$namaBarang;?>" required/>
-                                          </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-stok">Harga Barang</label>
-                                          <div class="col-sm-10">
-                                            <input type="number"
-                                             name = "harga"
-                                             id="basic-default-stok"
-                                              class="form-control phone-mask"
-                                              aria-describedby="basic-default-stok"
-                                              value="<?=$harga;?>"
-                                              required
-                                            />
+                                            <input type="text" class="form-control" id="basic-default-name" name="namaKatagori" value="<?=$namaKatagori;?>" required/>
                                           </div>
                                         </div>
                                         <div class="col-sm-10">
-                                        <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                          <button type="submit" class="btn btn-primary" name="update_barang">Update</button>
+                                        <input type="hidden" name="id_katagori" value="<?=$idKatagori;?>">
+                                          <button type="submit" class="btn btn-primary" name="update_katagori">Update</button>
                                         </div>
                                         </form>
                                       </div>
@@ -522,9 +561,6 @@ if(isset($_POST['hapus_barang'])){
                           </tbody>
                     </table>  
                   </div>
-                  <div class="col-sm-10 mt-3">
-                      <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                  </div
                 </div>
               </div>
 
@@ -587,7 +623,7 @@ if(isset($_POST['hapus_barang'])){
 
     <script>
     $(document).ready(function(){
-        $('#tabel-data-barang').DataTable();
+        $('#tabel-data-katagori').DataTable();
     });
 </script>
 
