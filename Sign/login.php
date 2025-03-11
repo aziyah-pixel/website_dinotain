@@ -20,7 +20,7 @@ if (isset($_SESSION["login"])) {
     }
 }
 
- require "include/config.php";
+ require "../include/config.php";
  ?>
 
 
