@@ -130,5 +130,140 @@ if(isset($_POST['hapus_provinsi'])){
   }
 } 
 
+//menambahkan data artikel 
+function tambahArtikel($dataArtikel) {
+  global $connection;
+  
+  $idArtikel = htmlspecialchars($dataArtikel["id_artikel"]);
+  $kategoriArtikel = $dataArtikel["katagori_artikel"];
+  $judulArtikel = htmlspecialchars($dataArtikel["judul_artikel"]);
+  $img = uploadimg();
+  $isi = htmlspecialchars($dataArtikel["isi_artikel"]);
+  $link = htmlspecialchars($dataArtikel["url_artikel"]);
+  $tangal = $dataArtikel["date_artikel"];
+  
+  if(!$img) {
+    return 0;
+  } 
+  
+  $queryInsertDataArtikel = "INSERT INTO tbl_artikel VALUES('$idArtikel', '$kategoriArtikel', '$img', '$judulArtikel', '$isi', '$link', '$tangal')";
+  
+  mysqli_query($connection, $queryInsertDataArtikel);
+  return mysqli_affected_rows($connection);
+  
+}       
+
+// Function upload gambar 
+function uploadimg() {
+  $namaFile = $_FILES["foto_artikel"]["name"];
+  $ukuranFile = $_FILES["foto_artikel"]["size"];
+  $error = $_FILES["foto_artikel"]["error"];
+  $tmpName = $_FILES["foto_artikel"]["tmp_name"];
+  
+  // cek apakah ada gambar yg diupload
+  if($error === 4) {
+    echo "<script>
+    alert('Silahkan upload foto terlebih dahulu!')
+    </script>";
+    return 0;
+  }
+  
+  // cek kesesuaian format gambar
+  $jpg = "jpg";
+  $jpeg = "jpeg";
+  $png = "png";
+  $svg = "svg";
+  $bmp = "bmp";
+  $psd = "psd";
+  $tiff = "tiff";
+  $formatGambarValid = [$jpg, $jpeg, $png, $svg, $bmp, $psd, $tiff];
+  $ekstensiGambar = explode('.', $namaFile);
+  $ekstensiGambar = strtolower(end($ekstensiGambar));
+  
+  if(!in_array($ekstensiGambar, $formatGambarValid)) {
+    echo "<script>
+    alert('Format file tidak sesuai');
+    </script>";
+    return 0;
+  }
+  
+  // batas ukuran file
+  if($ukuranFile > 2000000) {
+    echo "<script>
+    alert('Ukuran file terlalu besar!');
+    </script>";
+    return 0;
+  }
+  
+   //generate nama file baru, agar nama file tdk ada yg sama
+  $namaFileBaru = uniqid();
+  $namaFileBaru .= ".";
+  $namaFileBaru .= $ekstensiGambar;
+  
+  move_uploaded_file($tmpName, 'imgDB/' . $namaFileBaru);
+  return $namaFileBaru;
+} 
+
+//membaca data
+function queryReadData($dataKategori) {
+  global $connection;//global mengakses variabel yang di definisikan di luar function dan sebaliknya,
+  $result = mysqli_query($connection, $dataKategori);
+  $items = [];
+  while($item = mysqli_fetch_assoc($result)) {
+    $items[] = $item;
+  }     
+  return $items;
+}
+
+// UPDATE data artikel 
+function updateartikel($dataArtikel) {
+  global $connection;
+
+  $gambarLama = htmlspecialchars($dataArtikel["fotoLama"]);
+  $idArtikel = htmlspecialchars($dataArtikel["id_artikel"]);
+  $kategoriArtikel = $dataArtikel["katagori_artikel"];
+  $judulArtikel = htmlspecialchars($dataArtikel["judul_artikel"]);
+  $isiArtikel = htmlspecialchars($dataArtikel["isi_artikel"]);
+  $link = htmlspecialchars($dataArtikel["url_artikel"]);
+  $tanggal = $dataArtikel["date_artikel"];  
+  
+  // pengecekan mengganti gambar || tidak
+  if($_FILES["foto_artikel"]["error"] === 4) {
+    $foto = $gambarLama;
+  }else {
+    $foto = uploadimg();
+  }
+  // 4 === gagal upload gambar
+  // 0 === berhasil upload gambar
+  
+  $queryUpdateArtikel = "UPDATE tbl_artikel SET 
+  id_artikel = '$idArtikel',
+  katagori_artikel = '$kategoriArtikel',
+  foto = '$foto',
+  judul_artikel = '$judulArtikel',
+   isi = '$isiArtikel',
+  link = '$link',
+  tanggal = '$tanggal'
+  WHERE id_artikel = '$idArtikel'
+  ";
+  
+  mysqli_query($connection, $queryUpdateArtikel);
+  return mysqli_affected_rows($connection);
+}
+
+//hapus artikel
+if(isset($_POST['hapus_artikel'])){
+  $idArtikel = $_POST['idArtikel'];
+
+  $hapusArtikel = mysqli_query($connection,"DELETE FROM tbl_artikel WHERE id_artikel='$idArtikel'");
+  if($hapusArtikel){
+    header('location:index.php');
+  }else{
+    echo"<script>
+      alert('Data Provinsi gagal dihapus!');
+      </script>";
+  }
+} 
+
 
 ?>

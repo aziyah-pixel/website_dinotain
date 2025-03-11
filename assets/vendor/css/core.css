@@ -15273,7 +15273,7 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 
 .layout-navbar {
   position: relative;
-  padding-top: 0.25rem;
+  padding-top : 0.25rem;
   padding-bottom: 0.2rem;
   height: 3.875rem;
   flex-wrap: nowrap;

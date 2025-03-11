@@ -1,30 +1,43 @@
-<?php
-session_start();
-
-if(isset($_SESSION["login"]) ) {
-    header("Location: ../admin/index.php");
-    exit;
-}
-
+<?php 
+require "../include/koneksi.php";
 require "function.php";
 
-if(isset($_POST["tambah_artikel"]) ) {
-  
-  if(tambahArtikel($_POST) > 0) {
-    header("Location: index.php");
-  }else {
-    echo "<script>
-    alert('Data Artikel gagal ditambahkan!');
-    </script>";
-  }
+// Ambil data dari url
+$review = $_GET["idReview"];
+$reviewData = queryReadData("SELECT * FROM tbl_artikel WHERE id_artikel = '$review'")[0];
+if (empty($reviewData)) {
+  die("Data tidak ditemukan.");
 }
 
-$artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
+if(isset($_POST["update_artikel"]) ) {
+  
+  if(updateartikel($_POST) > 0) {
+    header('location: index.php');
+  }else {
+    echo "<script>
+    alert('Data artikel gagal diupdate!');
+    </script>";
+  }
+  
+}
 
 
+if(isset($_POST["tambahBarang"]) ) {
+  
+  if(tambahBarang($_POST) > 0) {
+    header('location: databarang.php');
+  }else {
+    echo "<script>
+    alert('Data buku gagal ditambahkan!');
+    </script>";
+  }
+
+}
+//$informatika = "informatika";
 ?>
 
 <!DOCTYPE html>
+
 <!-- =========================================================
 * Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
 ==============================================================
@@ -81,16 +94,7 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
     <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
 
     <!-- Page CSS -->
-    <style>
-      .more-content {
-            display: none; /* Sembunyikan konten tambahan secara default */
-        }
-        .read-more {
-            color: blue;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-    </style>
+
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
 
@@ -103,9 +107,9 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
-
+        
         <!-- Menu -->
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+              <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
           <a href="index.php" class="app-brand-link">
               <span class="app-brand-logo demo">
@@ -122,7 +126,7 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item active">
+            <li class="menu-item active ">
               <a href="index.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
@@ -149,7 +153,8 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
               </a>
             </li>
              <!-- data Katagori -->
-             <li class="menu-item">
+            <li class="menu-item ">
+             <li class="menu-item ">
               <a href="dataKatagori.php" class="menu-link">
               <i class='menu-icon tf-icons bx bx-copy-alt'></i>
                 <div data-i18n="Analytics">Data Katogori Usaha</div>
@@ -413,112 +418,25 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
               </a>
             </li>
           </ul>
-        </aside>
+          </aside>
         <!-- / Menu -->
+
 
         <!-- Layout container -->
         <div class="layout-page">
 
-          <!-- Navbar -->
-          <nav
-            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-            id="layout-navbar">
-            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-                <i class="bx bx-menu bx-sm"></i>
-              </a>
-            </div>
-
-            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-              <!-- Search -->
-              <div class="navbar-nav align-items-center">
-                <div class="nav-item d-flex align-items-center">
-                  <i class="bx bx-search fs-4 lh-0"></i>
-                  <input
-                    type="text"
-                    class="form-control border-0 shadow-none"
-                    placeholder="Search..."
-                    aria-label="Search..."
-                  />
-                </div>
-              </div>
-              <!-- /Search -->
-
-              <ul class="navbar-nav flex-row align-items-center ms-auto">
-                <!-- User -->
-                <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                    <div class="avatar avatar-online">
-                      <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
-                    </div>
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <div class="d-flex">
-                          <div class="flex-shrink-0 me-3">
-                            <div class="avatar avatar-online">
-                              <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
-                            </div>
-                          </div>
-                          <div class="flex-grow-1">
-                            <span class="fw-semibold d-block"><?php echo $_SESSION['username'] = $username;?></span>
-                            <small class="text-muted">Admin</small>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <i class="bx bx-user me-2"></i>
-                        <span class="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <i class="bx bx-cog me-2"></i>
-                        <span class="align-middle">Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <span class="d-flex align-items-center align-middle">
-                          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                          <span class="flex-grow-1 align-middle">Billing</span>
-                          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="auth-login-basic.html">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <!--/ User -->
-              </ul>
-            </div>
-          </nav>
-          <!-- / Navbar -->
-
           <!-- Content wrapper -->
           <div class="content-wrapper">
+
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
               <div class="row">
 
-                <div class="col-xxl">
+               <!-- Basic Layout -->
+               <div class="col-xxl">
                   <div class="card mb-4">
                     <div class="card-header d-flex align-items-center justify-content-between">
-                      <h5 class="mb-0">Input Artikel</h5>
+                      <h5 class="mb-0">Edit Artikel</h5>
                     </div>
                     <div class="card-body">
                       <form method="post" enctype="multipart/form-data" >
@@ -530,11 +448,8 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
                                class="form-control" 
                                 name = "id_artikel"
                                 id="basic-default-kode"
-                               aria-describedby="additional_kode_information"
-                               require/>
-                                            <span id="additional_kode_information" class="form-text">
-                                                <em>ID artikel boleh dikosongi</em>
-                                            </span> 
+                                value="<?= $reviewData["id_artikel"];?>"
+                               readonly/>
                           </div>
 
                         </div>
@@ -546,8 +461,8 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
                               list="datalistOptions"
                               id="exampleDataList"
                               name="katagori_artikel"
-                              placeholder="Type to search..."
-                              require/>
+                              value="<?= $reviewData["katagori_artikel"];?>"
+                               />
                             
                             <datalist id="datalistOptions">
                               <option value="Promosi"></option>
@@ -559,13 +474,15 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
                         <div class="row mb-3">
                           <label class="col-sm-2 col-form-label" for="basic-default-name">Judul Artikel</label>
                           <div class="col-sm-10">
-                             <input type="text" class="form-control" id="basic-default-name" name="judul_artikel" placeholder="" required/>
+                             <input type="text" class="form-control" id="basic-default-name" name="judul_artikel" placeholder=""  value="<?= $reviewData["judul_artikel"]; ?>"/>
                           </div>
                         </div>
 
                         <div class="row mb-3">
                          <label for="formFile" class="col-sm-2 col-form-label">Upload Foto</label>
                           <div class="col-sm-10">
+                          <input type="hidden" name="fotoLama" value="<?= $reviewData["foto"];?>">
+                          <img src="imgDB/<?= $reviewData["foto"]; ?>" width="80px" height="80px">
                           <input class="form-control" type="file" id="formFileMultiple" name="foto_artikel"require/>
                           </div>
                         </div>
@@ -577,9 +494,7 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
                               name="isi_artikel"
                               class="form-control"
                               placeholder=""
-                              aria-label=""
-                              aria-describedby="basic-icon-default-message2"
-                            ></textarea>
+                            ><?= $reviewData["isi"];?>"</textarea>
                           </div>
                         </div>
                         <div class="row mb-3">
@@ -588,7 +503,7 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
                           <input
                             class="form-control"
                             type="url"
-                            value="https://themeselection.com"
+                            value="<?= $reviewData["link"]; ?>" 
                             id="html5-url-input"
                             name="url_artikel"
                           />
@@ -604,7 +519,8 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
 
                         <div class="row justify-content-end">
                           <div class="col-sm-10">
-                            <button type="submit" class="btn btn-primary" name="tambah_artikel">Send</button>
+                            <button type="submit" class="btn btn-primary" name="update_artikel">Send</button>
+                            <a class="btn btn-danger" href="index.php">Cancel</a>
                           </div>
                         </div>
                       </form>
@@ -612,52 +528,6 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
                   </div>
                 </div>
 
-              <!-- Grid Card -->
-              <h5 class="pb-1 mb-4">Promosi & Informasi</h5>
-              <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-              <?php foreach ($artikel as $item) : ?>
-                <div class="col">
-                  <div class="card ">
-                    <img class="card-img-top" src="imgDB/<?= $item["foto"]; ?>" alt="Card image cap" />
-                    <div class="card-body">
-                      <h5 class="card-title"><?= $item["judul_artikel"]; ?></h5>
-                      <span class="more-content">
-                      <p class="card-text">
-                      <?= $item["isi"]; ?>
-                      <p class="card-text"><small class="text-muted"><a href="http://"><?= $item["link"]; ?></a></small></p>
-                      </p>
-                      </span>
-                      <span class="read-more" onclick="toggleContent(this)">Read More</span>
-                    </div>
-                    <div class="card-body">
-                      <a class="btn btn-success" href="updateArtikel.php?idReview=<?= $item["id_artikel"]; ?>" id="review">Edit</a>
-                      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteArtikel<?= $item["id_artikel"]; ?>">Delete</button>
-                    </div>
-                     <!--Delete Modal-->
-                     <div class="modal fade" id="deleteArtikel<?= $item["id_artikel"]; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Hapus Artikel</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="post">
-                <div class="modal-body mb-3">
-                    <h5>Apakah Anda Yakin, ingin menghapus<?= $item["judul_artikel"]; ?></h5>
-                    <input type="hidden" name="idArtikel" value="<?= $item["id_artikel"]; ?>">
-                    <button type="submit" class="btn btn-danger" name="hapus_artikel">Hapus</button>
-                </div>
-            </form>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div>
-                                <!--/Delete Modal -->
-                  </div>
-                </div>
-                <?php endforeach; ?>
-              </div>
 
               </div>
             </div>
@@ -671,7 +541,7 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
                   <script>
                     document.write(new Date().getFullYear());
                   </script>
-                  , made with ❤️ by Nanda & Nyla || ITB AAS INDONESIA
+                  , made with ❤️ by Nanda & Nyla || ITB AAS Indonesia
                 </div>
               </div>
             </footer>
@@ -688,6 +558,8 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
     <!-- / Layout wrapper -->
+
+
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="../assets/vendor/libs/jquery/jquery.js"></script>
@@ -697,20 +569,6 @@ $artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
 
     <script src="../assets/vendor/js/menu.js"></script>
     <!-- endbuild -->
-
-    <!-- READ MORE-->
-    <script>
-        function toggleContent(element) {
-            const moreContent = element.previousElementSibling; // Ambil elemen sebelumnya (konten tambahan)
-            if (moreContent.style.display === "none" || moreContent.style.display === "") {
-                moreContent.style.display = "inline"; // Tampilkan konten tambahan
-                element.textContent = "Read Less"; // Ubah teks menjadi "Read Less"
-            } else {
-                moreContent.style.display = "none"; // Sembunyikan konten tambahan
-                element.textContent = "Read More"; // Ubah teks kembali menjadi "Read More"
-            }
-        }
-    </script>
 
     <!-- Vendors JS -->
     <script src="../assets/vendor/libs/apex-charts/apexcharts.js"></script>
