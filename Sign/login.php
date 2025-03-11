@@ -1,9 +1,26 @@
 <?php
+ session_start(); // Pastikan sesi dimulai
+
  if(isset($_GET['pesan'])){
   if($_GET['pesan']=="gagal"){
    echo "<div class='alert'>Username dan Password Salah !</div>";
   }
  }
+
+if (isset($_SESSION["login"])) {
+    // Cek apakah pengguna adalah admin
+    if ($_SESSION['tbl_user']['level'] = "admin"){
+        header("Location: ../admin/index.php");
+        exit;
+    }
+    // Cek apakah pengguna adalah user biasa
+    elseif ($_SESSION['tbl_user']['level'] = "user") {
+        header("Location: ../html/index.php");
+        exit;
+    }
+}
+
+ require "include/config.php";
  ?>
 
 
@@ -144,7 +161,7 @@
               <!-- /Logo -->
               <h4 class="mb-2 text-center">Welcome to dinotain! 👋</h4>
               <p class="mb-4 text-center">Please sign-in to your account </p>
-              <form id="formAuthentication" class="mb-3" action="include/config.php" method="POST">
+              <form id="formAuthentication" class="mb-3" action="" method="POST">
                 <div class="mb-3">
                   <label for="email" class="form-label">Username</label>
                   <input
