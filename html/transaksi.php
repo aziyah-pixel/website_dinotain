@@ -400,6 +400,12 @@
                     </div>
                     <div class="card-body">
                       <form method="post" id="datatransaksiForm">
+                      <div class="row mb-3">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">tgl Pembayaran</label>
+                          <div class="col-sm-10">
+                          <input type="date" id="tglPembayaran" value="">
+                          </div>
+                        </div>
                         <div class="row mb-3">
                           <label class="col-sm-2 col-form-label" for="basic-default-name">nama barang</label>
                           <div class="col-sm-10">
@@ -407,32 +413,27 @@
                           </div>
                         </div>
                         <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name">tgl Pembayaran</label>
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">Qty Barang</label>
                           <div class="col-sm-10">
-                          <input type="date" id="tglPembayaran" value="">
+                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="qty_barang" require/>
                           </div>
                         </div>
                         <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name">Kode barang</label>
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">Harga barang</label>
                           <div class="col-sm-10">
-                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="kode_barang" require/>
+                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="harga_barang" require/>
                           </div>
                         </div>
                         <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name">Jenis barang</label>
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">Total Pembayaran (Rp.)</label>
                           <div class="col-sm-10">
-                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="jenis_barang" require/>
+                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="total_pembayaran" require/>
                           </div>
                         </div>
-                        <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name">qty terjual</label>
-                          <div class="col-sm-10">
-                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="qty_terjual" require/>
-                          </div>
-                        </div>
+
                         <div class="row justify-content-end">
                           <div class="col-sm-10">
-                            <button type="submit" class="btn btn-primary" name="tambahPelangan">Simpan</button>
+                            <button type="submit" class="btn btn-primary" name="transaksi">SIMPAN PEMBAYARAN</button>
                             <input type="reset" class="btn btn-warning" value="Reset">
                           </div>
                         </div>
@@ -453,32 +454,13 @@
                     <thead>
                           <tr>
                             <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Kode</th>
                             <th>Nama Barang</th>
-                            <th>Jenis</th>
-                            <th>Qty terjual</th>
+                            <th>harga</th>
+                            <th>Qty</th>
+                            <th>total</th>
+                            <th>Action</th>
                           </tr>
                       </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td>08-03-2025</td>
-                          <td>B00001</td>
-                          <td>SEDAAP MIE AYAM BAWANG</td>
-                          <td>makanan</td>
-                          <td>2</td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td>12-03-2025</td>
-                          <td>B00012</td>
-                          <td>good day</td>
-                          <td>minuman</td>
-                          <td>3</td>
-                        </tr>
-                        <!-- Tambah baris lainnya sesuai kebutuhan -->
-                      </tbody>
                     </table>  
                     </div>
                     <div class="col-sm-10 mt-3">
