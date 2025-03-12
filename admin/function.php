@@ -265,5 +265,31 @@ if(isset($_POST['hapus_artikel'])){
   }
 } 
 
+//mencari data
+function searchartikel($keyword) {
+  // search data artikel
+  $querySearch = "SELECT * FROM tbl_artikel 
+  WHERE
+  judul_artikel LIKE '%$keyword%' OR
+  katagori_artikel LIKE '%$keyword%'
+  ";
+  return queryReadData($querySearch);
+}
+
+//memberi tangapan
+if(isset($_POST['update_pesan'])){
+  $idPesan = $_POST['id_pesan'];
+  $balasan = $_POST['balasan'];
+  
+  $updatePesan = mysqli_query($connection,"UPDATE tbl_inbox_cs SET tanggapan='$balasan' WHERE id_inbox='$idPesan'");
+
+  if($updatePesan){
+    header('location:laporanPesan.php');
+    } else {
+      echo"<script>
+      alert('pesan gagal dibalas!');
+      </script>";
+    }
+}
 
 ?>

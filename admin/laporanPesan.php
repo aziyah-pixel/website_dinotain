@@ -1,16 +1,18 @@
 <?php
-require "../include/function.php";
-$barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
+require "function.php";
+$pesan = mysqli_query($connection,"SELECT * FROM tbl_inbox_cs");
+$h1 = mysqli_num_rows($pesan);//jumlah pelangan
+$nama = mysqli_query($connection,"SELECT * FROM tbl_inbox_cs");
 
-if(isset($_POST['hapus_barang'])){
-  $kodeBarang = $_POST['idBarang'];
+if(isset($_POST['hapus_pesan'])){
+  $idpesan = $_POST['idPesan'];
 
-  $hapus = mysqli_query($connection,"DELETE FROM tbl_barang WHERE id_barang='$kodeBarang'");
+  $hapus = mysqli_query($connection,"DELETE FROM tbl_inbox_cs WHERE id_inbox='$idpesan'");
   if($hapus){
-    header('location:../html/laporanBarang.php');
+    header('location:laporanPesan.php');
   }else{
     echo"<script>
-      alert('Data Barang gagal dihapus!');
+      alert('Pesan gagal dihapus!');
       </script>";
   }
 } 
@@ -90,8 +92,8 @@ if(isset($_POST['hapus_barang'])){
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
         
-        <!-- Menu -->
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+         <!-- Menu -->
+         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
           <a href="index.php" class="app-brand-link">
               <span class="app-brand-logo demo">
@@ -115,49 +117,48 @@ if(isset($_POST['hapus_barang'])){
               </a>
             </li>
 
-             <!-- Transaksi -->
-             <li class="menu-item">
-              <a href="transaksi.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-cart-alt"></i>
-                <div data-i18n="Analytics">Transaksi</div>
-              </a>
-            </li>
-
           <!--Master Data-->
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Master Data</span>
             </li>
-            <!-- data barang -->
+            <!-- data User -->
             <li class="menu-item">
-              <a href="dataBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-package' ></i>
-                <div data-i18n="Analytics">Input Barang</div>
+              <a href="dataUser.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bxs-user-detail'></i>
+                <div data-i18n="Analytics">Data User</div>
               </a>
             </li>
-             <!-- data pelangan -->
+            <!-- data Katagori -->
              <li class="menu-item">
-              <a href="dataPelangan.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bxs-user-account'></i>
-                <div data-i18n="Analytics">Input Pelangan</div>
+              <a href="dataKatagori.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-copy-alt'></i>
+                <div data-i18n="Analytics">Data Katogori Usaha</div>
               </a>
             </li>
+            <!-- data rovinsi -->
+             <li class="menu-item">
+              <a href="dataProvinsi.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-map'></i>
+                <div data-i18n="Analytics">Data Provinsi</div>
+              </a>
+            </li>
+            <!-- Artikel -->
+              <li class="menu-item ">
+                <a href="inputArtikel.php" class="menu-link">
+                <i class='menu-icon tf-icons bx bx-paste'></i>
+                  <div data-i18n="Analytics">Input Artikel</div>
+                  </a>
+              </li>
 
           <!--Laporan-->
               <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Laporan</span>
             </li>
-            <!-- laporan barang -->
+            <!-- laporan masange -->
             <li class="menu-item active">
-              <a href="laporanBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-file'></i>
-                <div data-i18n="Analytics">Laporan Barang</div>
-              </a>
-            </li>
-             <!-- laporan tansaksi -->
-             <li class="menu-item">
-              <a href="laporanTransaksi.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-box'></i>
-                <div data-i18n="Analytics">Laporan Transaksi</div>
+              <a href="laporanPesan.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-message-detail'></i>
+                <div data-i18n="Analytics">Message</div>
               </a>
             </li>
 
@@ -166,238 +167,12 @@ if(isset($_POST['hapus_barang'])){
               <span class="menu-header-text">Pages</span>
             </li>
             <li class="menu-item">
-              <a href="pages-account-settings-account.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-user-circle'></i>
-                <div data-i18n="Analytics">Account</div>
+            <a href="../Sign/login.php" class="menu-link" target="">
+              <i class='menu-icon tf-icons bx bx-log-out-circle' ></i>
+                <div data-i18n="Analytics">Log Out</div>
               </a>
             </li>
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-                <div data-i18n="Authentications">Authentications</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="auth-login-basic.html" class="menu-link" target="_blank">
-                    <div data-i18n="Basic">Log Out</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="auth-forgot-password-basic.html" class="menu-link" target="_blank">
-                    <div data-i18n="Basic">Forgot Password</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Components -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
-            <!-- Cards -->
-            <li class="menu-item">
-              <a href="cards-basic.html" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Cards</div>
-              </a>
-            </li>
-            <!-- User interface -->
-            <li class="menu-item">
-              <a href="javascript:void(0)" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="User interface">User interface</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="ui-accordion.html" class="menu-link">
-                    <div data-i18n="Accordion">Accordion</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-alerts.html" class="menu-link">
-                    <div data-i18n="Alerts">Alerts</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-badges.html" class="menu-link">
-                    <div data-i18n="Badges">Badges</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-buttons.html" class="menu-link">
-                    <div data-i18n="Buttons">Buttons</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-carousel.html" class="menu-link">
-                    <div data-i18n="Carousel">Carousel</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-collapse.html" class="menu-link">
-                    <div data-i18n="Collapse">Collapse</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-dropdowns.html" class="menu-link">
-                    <div data-i18n="Dropdowns">Dropdowns</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-footer.html" class="menu-link">
-                    <div data-i18n="Footer">Footer</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-list-groups.html" class="menu-link">
-                    <div data-i18n="List Groups">List groups</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-modals.html" class="menu-link">
-                    <div data-i18n="Modals">Modals</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-navbar.html" class="menu-link">
-                    <div data-i18n="Navbar">Navbar</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-offcanvas.html" class="menu-link">
-                    <div data-i18n="Offcanvas">Offcanvas</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-pagination-breadcrumbs.html" class="menu-link">
-                    <div data-i18n="Pagination &amp; Breadcrumbs">Pagination &amp; Breadcrumbs</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-progress.html" class="menu-link">
-                    <div data-i18n="Progress">Progress</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-spinners.html" class="menu-link">
-                    <div data-i18n="Spinners">Spinners</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-tabs-pills.html" class="menu-link">
-                    <div data-i18n="Tabs &amp; Pills">Tabs &amp; Pills</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-toasts.html" class="menu-link">
-                    <div data-i18n="Toasts">Toasts</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-tooltips-popovers.html" class="menu-link">
-                    <div data-i18n="Tooltips & Popovers">Tooltips &amp; popovers</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-typography.html" class="menu-link">
-                    <div data-i18n="Typography">Typography</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <!-- Extended components -->
-            <li class="menu-item">
-              <a href="javascript:void(0)" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-copy"></i>
-                <div data-i18n="Extended UI">Extended UI</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="extended-ui-perfect-scrollbar.html" class="menu-link">
-                    <div data-i18n="Perfect Scrollbar">Perfect scrollbar</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="extended-ui-text-divider.html" class="menu-link">
-                    <div data-i18n="Text Divider">Text Divider</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="menu-item">
-              <a href="icons-boxicons.html" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-crown"></i>
-                <div data-i18n="Boxicons">Boxicons</div>
-              </a>
-            </li>
-
-            <!-- Forms & Tables -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Forms &amp; Tables</span></li>
-            <!-- Forms -->
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-detail"></i>
-                <div data-i18n="Form Elements">Form Elements</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="forms-basic-inputs.html" class="menu-link">
-                    <div data-i18n="Basic Inputs">Basic Inputs</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="forms-input-groups.html" class="menu-link">
-                    <div data-i18n="Input groups">Input groups</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-detail"></i>
-                <div data-i18n="Form Layouts">Form Layouts</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="form-layouts-vertical.html" class="menu-link">
-                    <div data-i18n="Vertical Form">Vertical Form</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="form-layouts-horizontal.html" class="menu-link">
-                    <div data-i18n="Horizontal Form">Horizontal Form</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Tables -->
-            <li class="menu-item">
-              <a href="tables-basic.html" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Tables">Tables</div>
-              </a>
-            </li>
-            <!-- Misc -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
-            <li class="menu-item">
-              <a
-                href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                target="_blank"
-                class="menu-link"
-              >
-                <i class="menu-icon tf-icons bx bx-support"></i>
-                <div data-i18n="Support">Support</div>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a
-                href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                target="_blank"
-                class="menu-link"
-              >
-                <i class="menu-icon tf-icons bx bx-file"></i>
-                <div data-i18n="Documentation">Documentation</div>
-              </a>
-            </li>
+        
           </ul>
         </aside>
         <!-- / Menu -->
@@ -413,98 +188,114 @@ if(isset($_POST['hapus_barang'])){
               <div class="row">
 
               <div class="card">
-                <h5 class="card-header">Data Barang</h5>
+                <h5 class="card-header">Data Pesan</h5>
                 <div class="card-body">
                   <div class="table-responsive text-nowrap">
                     <table id="tabel-data-barang" class="table table-striped table-bordered" width="100%" cellspacing="0">
                       <thead>
                             <tr>
-                              <th>Kode Produk</th>
-                              <th>Nama Produk</th>
-                              <th>Harga</th>
+                              <th>No</th>
+                              <th>Tanggal</th>
+                              <th>Id Customer</th>
+                              <th>Subjek</th>
+                              <th>Isi</th>
+                              <th>Tangapan</th>
                               <th>Action</th>
                             </tr>
                       </thead>
                           <tbody>
                           <?php
-                              $get = mysqli_query($connection,"SELECT * FROM tbl_barang");
-                            
+                              $get = mysqli_query($connection,"SELECT * FROM tbl_inbox_cs");
+                              $i=1;
 
-                              while($barang=mysqli_fetch_array($get)){
-                              $kodeBarang = $barang['id_barang'];
-                              $namaBarang = $barang['nama_barang'];
-                              $harga = $barang['harga'];
+                              while($pesan=mysqli_fetch_array($get)){
+                              $id_user = $pesan['id_user'];
+                              $subjek = $pesan['katagori'];
+                              $isi = $pesan['isi_inbox'];
+                              $tanggal = $pesan['tanggal'];
+                              $tanggapan = $pesan['tanggapan'];
+                              $id_inbox = $pesan['id_inbox'];
 
                             ?>
                             <tr>
-                                <td><?=$kodeBarang; ?></td>
-                                <td><?=$namaBarang; ?> </td>
-                                <td><?=$harga; ?></td>
+                                <td><?=$i++; ?></td>
+                                <td><?=$tanggal; ?> </td>
+                                <td><?=$id_user; ?></td>
+                                <td><?=$subjek; ?></td>
+                                <td><?=$isi; ?></td>
+                                <td><?=$tanggapan; ?></td>
                                 <td>
                                   <div class="action text-center">
                                   <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit<?=$kodeBarang;?>">Edit</button>
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editpesan<?=$id_inbox;?>">Balas</button>
   
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?=$kodeBarang;?>">Delete</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletepesan<?=$id_inbox;?>">Delete</button>
                                   </div>
                                 </td>
 
                                 <!--Delete Modal-->
-                                <div class="modal fade" id="delete<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Barang</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <form method="post">
-                                      <div class="modal-body mb-3">
-                                          <h5>Apakah Anda Yakin, ingin menghapus <?=$namaBarang;?></h5>
-                                          <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                            <button type="button" class="btn btn-danger" name="hapus_barang">Hapus</button>
-                                     </div>
-                                     </form>
-                                      <div class="modal-footer">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                <div class="modal fade" id="deletepesan<?=$id_inbox;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hapus Pesan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body mb-3">
+                    <h5>Apakah Anda Yakin, ingin menghapus pesan dari<?=$id_user;?></h5>
+                    <input type="hidden" name="idPesan" value="<?=$id_inbox;?>">
+                    <button type="submit" class="btn btn-danger" name="hapus_pesan">Hapus</button>
+                </div>
+            </form>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
                                 <!--/Delete Modal -->
                                 
                             </tr>  
 
                                 <!-- Edit Modal -->
-                                <div class="modal fade" id="edit<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="editpesan<?=$id_inbox;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                   <div class="modal-dialog">
                                     <div class="modal-content">
                                       <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit Barang</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Tangapan Pesan</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                       </div>
                                       <div class="modal-body">
                                       <form method="POST">
                                         <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Produk</label>
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Isi Pesan</label>
                                           <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="basic-default-name" name="namabarang" value="<?=$namaBarang;?>" required/>
+                                          <textarea
+                                            id="basic-default-message"
+                                            name="isi"
+                                            class="form-control"
+                                            placeholder=""
+                                            aria-label=""
+                                            aria-describedby="basic-icon-default-message2"
+                                            readonly> <?=$isi;?></textarea>
                                           </div>
                                         </div>
                                         <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-stok">Harga Barang</label>
+                                          <label class="col-sm-2 col-form-label" for="basic-default-stok">Balasan</label>
                                           <div class="col-sm-10">
-                                            <input type="number"
-                                             name = "harga"
-                                             id="basic-default-stok"
-                                              class="form-control phone-mask"
-                                              aria-describedby="basic-default-stok"
-                                              value="<?=$harga;?>"
-                                              required
-                                            />
+                                          <textarea
+                                            id="basic-default-message"
+                                            name="balasan"
+                                            class="form-control"
+                                            placeholder=""
+                                            aria-label=""
+                                            aria-describedby="basic-icon-default-message2"
+                                            require> </textarea>
                                           </div>
                                         </div>
                                         <div class="col-sm-10">
-                                        <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                          <button type="submit" class="btn btn-primary" name="update_barang">Update</button>
+                                        <input type="hidden" name="id_pesan" value="<?=$id_inbox;?>">
+                                          <button type="submit" class="btn btn-primary" name="update_pesan">Update</button>
                                         </div>
                                         </form>
                                       </div>
@@ -522,9 +313,6 @@ if(isset($_POST['hapus_barang'])){
                           </tbody>
                     </table>  
                   </div>
-                  <div class="col-sm-10 mt-3">
-                      <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                  </div
                 </div>
               </div>
 

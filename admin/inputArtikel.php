@@ -8,12 +8,18 @@ if(!isset($_SESSION["login"]) ) {
 
 require "function.php";
 
-$artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
-
-if(isset($_POST["cari_artikel"]) ) {
-  //buat variabel dan ambil apa saja yg diketikkan user di dalam input dan kirimkan ke function search.
-  $artikel = searchartikel($_POST["keyword"]);
+if(isset($_POST["tambah_artikel"]) ) {
+  
+  if(tambahArtikel($_POST) > 0) {
+    header("Location: index.php");
+  }else {
+    echo "<script>
+    alert('Data Artikel gagal ditambahkan!');
+    </script>";
+  }
 }
+
+$artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
 
 ?>
 
@@ -116,7 +122,7 @@ if(isset($_POST["cari_artikel"]) ) {
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item active">
+            <li class="menu-item ">
               <a href="index.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
@@ -149,7 +155,7 @@ if(isset($_POST["cari_artikel"]) ) {
               </a>
             </li>
             <!-- Artikel -->
-              <li class="menu-item">
+              <li class="menu-item active">
                 <a href="inputArtikel.php" class="menu-link">
                 <i class='menu-icon tf-icons bx bx-paste'></i>
                   <div data-i18n="Analytics">Input Artikel</div>
@@ -186,55 +192,6 @@ if(isset($_POST["cari_artikel"]) ) {
         <!-- Layout container -->
         <div class="layout-page">
 
-          <!-- Navbar -->
-          <nav
-            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-            id="layout-navbar">
-            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-                <i class="bx bx-menu bx-sm"></i>
-              </a>
-            </div>
-
-            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-
-              <ul class="navbar-nav flex-row align-items-center ms-auto">
-                <!-- User -->
-                <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                    <div class="avatar avatar-online">
-                      <img src="../assets/img/avatars/1.jpeg" alt class="w-px-40 h-auto rounded-circle" />
-                    </div>
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <div class="d-flex">
-                          <div class="flex-shrink-0 me-3">
-                            <div class="avatar avatar-online">
-                             <i class='bx bxs-user w-px-40 h-auto rounded-circle'></i>
-                            </div>
-                          </div>
-                          <div class="flex-grow-1">
-                            <span class="fw-semibold d-block"><?php echo $_SESSION['tbl_user']['username']; ?></span>
-                            <small class="text-muted"><?php echo $_SESSION['tbl_user']['level']; ?></small>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="../Sign/login.php">
-                      <i class="bx bx-power-off me-2"></i>
-                        Log Out
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <!--/ User -->
-              </ul>
-            </div>
-          </nav>
-          <!-- / Navbar -->
 
           <!-- Content wrapper -->
           <div class="content-wrapper">
@@ -242,61 +199,104 @@ if(isset($_POST["cari_artikel"]) ) {
             <div class="container-xxl flex-grow-1 container-p-y">
               <div class="row">
 
+              <!--From Input-->
+                <div class="col-xxl">
+                  <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                      <h5 class="mb-0">Input Artikel</h5>
+                    </div>
+                    <div class="card-body">
+                      <form method="post" enctype="multipart/form-data" >
+                        <div class="row mb-3">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">ID Artikel</label>
+                          <div class="col-sm-10">
+                          <input 
+                               type="text" 
+                               class="form-control" 
+                                name = "id_artikel"
+                                id="basic-default-kode"
+                               aria-describedby="additional_kode_information"
+                               require/>
+                                            <span id="additional_kode_information" class="form-text">
+                                                <em>ID artikel boleh dikosongi</em>
+                                            </span> 
+                          </div>
 
-              <!-- Grid Card -->
-              <form action="" method="post">
-                <div class="mb-3 row">
-                    <div class="col-md-10">
-                      <input class="form-control" type="search" value="Search ..." id="keyword" name="keyword"/>
+                        </div>
+                        <div class="row mb-3">
+                          <label for="exampleDataList" class="col-sm-2 col-form-label">Katgori Artikel</label>
+                          <div class="col-sm-10">
+                            <input
+                              class="form-select"
+                              list="datalistOptions"
+                              id="exampleDataList"
+                              name="katagori_artikel"
+                              placeholder="Type to search..."
+                              require/>
+                            
+                            <datalist id="datalistOptions">
+                              <option value="Promosi"></option>
+                              <option value="Berita"></option>
+                            </datalist>
+                          </div>
+                        </div>
+
+                        <div class="row mb-3">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">Judul Artikel</label>
+                          <div class="col-sm-10">
+                             <input type="text" class="form-control" id="basic-default-name" name="judul_artikel" placeholder="" required/>
+                          </div>
+                        </div>
+
+                        <div class="row mb-3">
+                         <label for="formFile" class="col-sm-2 col-form-label">Upload Foto</label>
+                          <div class="col-sm-10">
+                          <input class="form-control" type="file" id="formFileMultiple" name="foto_artikel"require/>
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <label class="col-sm-2 col-form-label" for="basic-default-message">Isi</label>
+                          <div class="col-sm-10">
+                            <textarea
+                              id="basic-default-message"
+                              name="isi_artikel"
+                              class="form-control"
+                              placeholder=""
+                              aria-label=""
+                              aria-describedby="basic-icon-default-message2"
+                            ></textarea>
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                        <label for="html5-url-input" class="col-md-2 col-form-label">URL Artikel</label>
+                          <div class="col-sm-10">
+                          <input
+                            class="form-control"
+                            type="url"
+                            value="https://themeselection.com"
+                            id="html5-url-input"
+                            name="url_artikel"
+                          />
+                          </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                        <label for="html5-date-input" class="col-md-2 col-form-label">Date</label>
+                        <div class="col-md-10">
+                          <input class="form-control" type="date" value="2025-03-10" id="html5-date-input" name="date_artikel"/>
+                        </div>
+                      </div>
+
+                        <div class="row justify-content-end">
+                          <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary" name="tambah_artikel">Send</button>
+                          </div>
+                        </div>
+                      </form>
                     </div>
-                    <button type="submit" class="btn btn-primary col-md-2" name="cari_artikel">cari</button>
-                </div>
-              </form>
-              <h5 class="pb-1 mb-2">Promosi & Informasi</h5>
-              <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-              <?php foreach ($artikel as $item) : ?>
-                <div class="col">
-                  <div class="card ">
-                    <img class="card-img-top" src="imgDB/<?= $item["foto"]; ?>" alt="Card image cap" />
-                    <div class="card-body">
-                      <h5 class="card-title"><?= $item["judul_artikel"]; ?></h5>
-                      <span class="more-content">
-                      <p class="card-text">
-                      <?= $item["isi"]; ?>
-                      <p class="card-text"><small class="text-muted"><a href="http://"><?= $item["link"]; ?></a></small></p>
-                      </p>
-                      </span>
-                      <span class="read-more" onclick="toggleContent(this)">Read More</span>
-                    </div>
-                    <div class="card-body">
-                      <a class="btn btn-success" href="updateArtikel.php?idReview=<?= $item["id_artikel"]; ?>" id="review">Edit</a>
-                      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteArtikel<?= $item["id_artikel"]; ?>">Delete</button>
-                    </div>
-                     <!--Delete Modal-->
-                     <div class="modal fade" id="deleteArtikel<?= $item["id_artikel"]; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Hapus Artikel</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="post">
-                <div class="modal-body mb-3">
-                    <h5>Apakah Anda Yakin, ingin menghapus<?= $item["judul_artikel"]; ?></h5>
-                    <input type="hidden" name="idArtikel" value="<?= $item["id_artikel"]; ?>">
-                    <button type="submit" class="btn btn-danger" name="hapus_artikel">Hapus</button>
-                </div>
-            </form>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div>
-                                <!--/Delete Modal -->
                   </div>
                 </div>
-                <?php endforeach; ?>
-              </div>
+              <!--  /From input-->
 
               </div>
             </div>

@@ -7,7 +7,7 @@
   }
  }
 
-if (isset($_SESSION["login"])) {
+/*if (isset($_SESSION["login"])) {
     // Cek apakah pengguna adalah admin
     if ($_SESSION['tbl_user']['level'] = "admin"){
         header("Location: ../admin/index.php");
@@ -18,7 +18,7 @@ if (isset($_SESSION["login"])) {
         header("Location: ../html/index.php");
         exit;
     }
-}
+}*/
 
  require "../include/config.php";
  ?>
@@ -43,7 +43,7 @@ if (isset($_SESSION["login"])) {
   class="light-style customizer-hide"
   dir="ltr"
   data-theme="theme-default"
-  data-assets-path="assets"
+  data-assets-path="../assets"
   data-template="vertical-menu-template-free"
 >
   <head>
@@ -58,7 +58,7 @@ if (isset($_SESSION["login"])) {
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -69,25 +69,25 @@ if (isset($_SESSION["login"])) {
     />
 
     <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="assets/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="stylesheet" href="../assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="../assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="../assets/css/demo.css" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
     <!-- Page CSS -->
     <!-- Page -->
-    <link rel="stylesheet" href="assets/vendor/css/pages/page-auth.css" />
+    <link rel="stylesheet" href="../assets/vendor/css/pages/page-auth.css" />
     <!-- Helpers -->
-    <script src="assets/vendor/js/helpers.js"></script>
+    <script src="../assets/vendor/js/helpers.js"></script>
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="assets/js/config.js"></script>
+    <script src="../assets/js/config.js"></script>
   </head>
 
   <body>
@@ -218,18 +218,18 @@ if (isset($_SESSION["login"])) {
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
-    <script src="assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="assets/vendor/libs/popper/popper.js"></script>
-    <script src="assets/vendor/js/bootstrap.js"></script>
-    <script src="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../assets/vendor/libs/popper/popper.js"></script>
+    <script src="../assets/vendor/js/bootstrap.js"></script>
+    <script src="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
 
-    <script src="assets/vendor/js/menu.js"></script>
+    <script src="../assets/vendor/js/menu.js"></script>
     <!-- endbuild -->
 
     <!-- Vendors JS -->
 
     <!-- Main JS -->
-    <script src="assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 
     <!-- Page JS -->
 

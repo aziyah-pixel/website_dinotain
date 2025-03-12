@@ -40,7 +40,7 @@ if(isset($_POST["login"]) ) {
     $_SESSION['tbl_user']['level'] = "user";
     // alihkan ke halaman dashboard pegawai
     header("location: ../html/index.php");
-
+    exit;
     }else{
 
     // alihkan ke halaman login kembali
