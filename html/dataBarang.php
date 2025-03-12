@@ -1,18 +1,19 @@
 <?php 
+session_start(); 
 require "../include/function.php";
 
 if(isset($_POST["tambahBarang"]) ) {
   
   if(tambahBarang($_POST) > 0) {
     header('location: databarang.php');
+    exit; 
   }else {
     echo "<script>
     alert('Data buku gagal ditambahkan!');
     </script>";
   }
-
 }
-//$informatika = "informatika";
+
 ?>
 
 <!DOCTYPE html>
@@ -426,6 +427,7 @@ if(isset($_POST["tambahBarang"]) ) {
                     <div class="card-body">
                       <form method="post">
                         <div class="row mb-3">
+                        <input type="hidden" name="id_user" value="<?php echo $_SESSION['tbl_user']['id_user']; ?>">
                           <label class="col-sm-2 col-form-label" for="basic-default-kode">Kode Produk</label>
                           <div class="col-sm-10">
                             <input 
@@ -434,10 +436,9 @@ if(isset($_POST["tambahBarang"]) ) {
                             name = "id_barang"
                             id="basic-default-kode" 
                             aria-describedby="additional_kode_information"
-       
-                            required/>
+                            readonly/>
                             <span id="additional_kode_information" class="form-text">
-                                For example: B01, <em>Kode barang tidak boleh sama</em>
+                                <em>Kode barang tidak usah di isi karena akan terisi otomatis</em>
                             </span> 
                           </div>
                         </div>

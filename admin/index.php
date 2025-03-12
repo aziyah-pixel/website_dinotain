@@ -79,9 +79,9 @@ if(isset($_POST["cari_artikel"]) ) {
             display: none; /* Sembunyikan konten tambahan secara default */
         }
         .read-more {
-            color: blue;
+            color: red;
             cursor: pointer;
-            text-decoration: underline;
+            font-style: italic;
         }
     </style>
 
@@ -274,24 +274,24 @@ if(isset($_POST["cari_artikel"]) ) {
                     </div>
                      <!--Delete Modal-->
                      <div class="modal fade" id="deleteArtikel<?= $item["id_artikel"]; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Hapus Artikel</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="post">
-                <div class="modal-body mb-3">
-                    <h5>Apakah Anda Yakin, ingin menghapus<?= $item["judul_artikel"]; ?></h5>
-                    <input type="hidden" name="idArtikel" value="<?= $item["id_artikel"]; ?>">
-                    <button type="submit" class="btn btn-danger" name="hapus_artikel">Hapus</button>
-                </div>
-            </form>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div>
+                          <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLabel">Hapus Artikel</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <form method="post">
+                                      <div class="modal-body mb-3">
+                                          <h5>Apakah Anda Yakin, ingin menghapus<?= $item["judul_artikel"]; ?></h5>
+                                          <input type="hidden" name="idArtikel" value="<?= $item["id_artikel"]; ?>">
+                                          <button type="submit" class="btn btn-danger" name="hapus_artikel">Hapus</button>
+                                      </div>
+                                  </form>
+                                  <div class="modal-footer">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
                                 <!--/Delete Modal -->
                   </div>
                 </div>

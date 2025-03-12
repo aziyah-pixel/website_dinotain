@@ -11,8 +11,12 @@ if(isset($_POST["login"]) ) {
     $username = strtolower($_POST["username"]);
     $password = $_POST["password"];
     
-    $result = mysqli_query($connection, "SELECT * FROM tbl_user WHERE username = '$username' AND password = '$password'");
-    
+    // menggunakan prepared statements untuk keamanan
+    $stmt = $connection->prepare("SELECT * FROM tbl_user WHERE username = ? AND password = ?");
+    $stmt->bind_param("ss", $username, $password);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     // menghitung jumlah data yang ditemukan
     $cek = mysqli_num_rows($result);
 
@@ -20,6 +24,7 @@ if(isset($_POST["login"]) ) {
     if($cek > 0){
 
     $data = mysqli_fetch_assoc($result);
+    $id_user = $data['id_user'];
 
     // cek jika login sebagai admin
     if($data['level']=="admin"){
@@ -28,6 +33,7 @@ if(isset($_POST["login"]) ) {
     $_SESSION['login'] = true;
     $_SESSION['tbl_user']['username'] = $username;
     $_SESSION['tbl_user']['level'] = "admin";
+    $_SESSION['tbl_user']['id_user'] = $id_user;
     // alihkan ke halaman dashboard admin
     header("location:../admin/index.php");
     exit;
@@ -38,7 +44,8 @@ if(isset($_POST["login"]) ) {
     $_SESSION['login'] = true;
     $_SESSION['tbl_user']['username'] = $username;
     $_SESSION['tbl_user']['level'] = "user";
-    // alihkan ke halaman dashboard pegawai
+    $_SESSION['tbl_user']['id_user'] = $id_user; 
+    // alihkan ke halaman dashboard user
     header("location: ../html/index.php");
     exit;
     }else{

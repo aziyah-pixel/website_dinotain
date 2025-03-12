@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+require "../include/function.php";
+
+$artikel = mysqli_query($connection,"SELECT * FROM tbl_artikel");
+
+if(isset($_POST["cari_artikel"]) ) {
+  //buat variabel dan ambil apa saja yg diketikkan user di dalam input dan kirimkan ke function search.
+  $artikel = searchartikel($_POST["keyword"]);
+}
+?>
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -56,6 +68,16 @@
     <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
 
     <!-- Page CSS -->
+    <style>
+      .more-content {
+            display: none; /* Sembunyikan konten tambahan secara default */
+        }
+        .read-more {
+            color: red;
+            cursor: pointer;
+            font-style: italic;
+        }
+    </style>
 
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
@@ -398,15 +420,19 @@
             <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
               <!-- Search -->
               <div class="navbar-nav align-items-center">
+                <form action="" method="post">
                 <div class="nav-item d-flex align-items-center">
-                  <i class="bx bx-search fs-4 lh-0"></i>
                   <input
-                    type="text"
+                    type="search"
+                    id="searchInput"
                     class="form-control border-0 shadow-none"
                     placeholder="Search..."
                     aria-label="Search..."
+                    name="keyword"
                   />
+                  <button type="submit" class="btn btn-primary" name="cari_artikel">cari</button>
                 </div>
+                </form>
               </div>
               <!-- /Search -->
 
@@ -415,7 +441,7 @@
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                      <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                      <img src="../assets/img/avatars/1.jpeg" alt class="w-px-40 h-auto rounded-circle" />
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -424,45 +450,18 @@
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar avatar-online">
-                              <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                              <img src="../assets/img/avatars/1.jpeg" alt class="w-px-40 h-auto rounded-circle" />
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-semibold d-block">John Doe</span>
-                            <small class="text-muted">Admin</small>
+                            <span class="fw-semibold d-block"><?php echo $_SESSION['tbl_user']['username']; ?></span>
+                            <small class="text-muted"><?php echo $_SESSION['tbl_user']['level']; ?></small>
                           </div>
                         </div>
                       </a>
                     </li>
                     <li>
-                      <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <i class="bx bx-user me-2"></i>
-                        <span class="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <i class="bx bx-cog me-2"></i>
-                        <span class="align-middle">Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <span class="d-flex align-items-center align-middle">
-                          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                          <span class="flex-grow-1 align-middle">Billing</span>
-                          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="auth-login-basic.html">
+                      <a class="dropdown-item" href="../Sign/login.php">
                         <i class="bx bx-power-off me-2"></i>
                         <span class="align-middle">Log Out</span>
                       </a>
@@ -485,77 +484,23 @@
               <!-- Grid Card -->
               <h4 class="fw-bold py-3 mb-1"><span class="text-muted fw-light">Promosi & Informasi</h4>
               <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+
+              <?php foreach ($artikel as $item) : ?>
                 <div class="col">
-                  <div class="card h-100">
-                    <img class="card-img-top" src="../assets/img/elements/2.jpg" alt="Card image cap" />
+                  <div class="card">
+                    <img class="card-img-top" src="../admin/imgDB/<?=$item["foto"]; ?>" alt="Card image cap" />
                     <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">
-                        This is a longer card with supporting text below as a natural lead-in to additional content.
-                        This content is a little bit longer.
-                      </p>
+                      <h5 class="card-title"><?= $item["judul_artikel"]; ?></h5>
+                      <span class="more-content">
+                      <?= $item["isi"]; ?>
+                      <p class="card-text"><small class="text-muted"><a href="http://"><?= $item["link"]; ?></a></small></p>
+                      </span>
+                      <span class="read-more" onclick="toggleContent(this)">Read More</span>
                     </div>
                   </div>
                 </div>
-                <div class="col">
-                  <div class="card h-100">
-                    <img class="card-img-top" src="../assets/img/elements/13.jpg" alt="Card image cap" />
-                    <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">
-                        This is a longer card with supporting text below as a natural lead-in to additional content.
-                        This content is a little bit longer.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="card h-100">
-                    <img class="card-img-top" src="../assets/img/elements/4.jpg" alt="Card image cap" />
-                    <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">
-                        This is a longer card with supporting text below as a natural lead-in to additional content.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="card h-100">
-                    <img class="card-img-top" src="../assets/img/elements/18.jpg" alt="Card image cap" />
-                    <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">
-                        This is a longer card with supporting text below as a natural lead-in to additional content.
-                        This content is a little bit longer.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="card h-100">
-                    <img class="card-img-top" src="../assets/img/elements/19.jpg" alt="Card image cap" />
-                    <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">
-                        This is a longer card with supporting text below as a natural lead-in to additional content.
-                        This content is a little bit longer.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="card h-100">
-                    <img class="card-img-top" src="../assets/img/elements/20.jpg" alt="Card image cap" />
-                    <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">
-                        This is a longer card with supporting text below as a natural lead-in to additional content.
-                        This content is a little bit longer.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <?php endforeach; ?>
+
               </div>
               </div>
             </div>
@@ -595,6 +540,20 @@
 
     <script src="../assets/vendor/js/menu.js"></script>
     <!-- endbuild -->
+
+    <!--Read More-->
+    <script>
+        function toggleContent(element) {
+            const moreContent = element.previousElementSibling; // Ambil elemen sebelumnya (konten tambahan)
+            if (moreContent.style.display === "none" || moreContent.style.display === "") {
+                moreContent.style.display = "inline"; // Tampilkan konten tambahan
+                element.textContent = "Read Less"; // Ubah teks menjadi "Read Less"
+            } else {
+                moreContent.style.display = "none"; // Sembunyikan konten tambahan
+                element.textContent = "Read More"; // Ubah teks kembali menjadi "Read More"
+            }
+        }
+    </script>
 
     <!-- Vendors JS -->
     <script src="../assets/vendor/libs/apex-charts/apexcharts.js"></script>

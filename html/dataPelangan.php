@@ -1,4 +1,12 @@
 <?php 
+session_start();
+
+if (!isset($_SESSION['tbl_user']['id_user'])) {
+  header('location: login.php'); // Alihkan ke halaman login jika tidak ada sesi
+  exit;
+}
+
+$id_user = $_SESSION['tbl_user']['id_user'];
 
 require "../include/function.php";
 
@@ -13,7 +21,7 @@ if(isset($_POST["tambahPelangan"]) ) {
   }
 }
 
-$pelangan = mysqli_query($connection,"SELECT nama_pelangan, alamat, no_telep FROM tbl_pelangan");
+$pelangan = mysqli_query($connection,"SELECT * FROM tbl_pelangan WHERE id_user = '$id_user'");
 $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
 
 //$informatika = "informatika";
@@ -424,6 +432,7 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                     </div>
                     <div class="card-body">
                       <form method="post" id="dataPelangganForm">
+                      <input type="hidden" name="id_user" value="<?=$id_user; ?>">
                         <div class="row mb-3">
                           <label class="col-sm-2 col-form-label" for="basic-default-name">Nama</label>
                           <div class="col-sm-10">
@@ -489,13 +498,13 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                       <tbody>
 
                           <?php
-                            $get = mysqli_query($connection,"SELECT nama_pelangan, alamat, no_telep FROM tbl_pelangan");
-                            $i = 1; //penomoran
+                           $i = 1; // penomoran
+                           while ($pelanganData = mysqli_fetch_array($pelangan)) {
+                               $namaPelangan = $pelanganData['nama_pelangan'];
+                               $alamat = $pelanganData['alamat'];
+                               $noTelepon = $pelanganData['no_telep'];
+                               $idpelangan = $pelanganData['id_pelangan'];
 
-                            while($pelangan=mysqli_fetch_array($get)){
-                            $namaPelangan = $pelangan['nama_pelangan'];
-                            $alamat = $pelangan['alamat'];
-                            $noTelepon = $pelangan['no_telep'];
 
                           ?>
                           <tr>
@@ -503,8 +512,86 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                               <td><?php echo $namaPelangan;?> </td>
                               <td><?php echo $alamat;?></td>
                               <td><?php echo $noTelepon;?></td>
-                              <td>edit</td>
+                              <td>
+                              <div class="action text-center">
+                                  <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editpelangan<?=$idpelangan;?>">Edit</button>
+  
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletepelangan<?=$idpelangan;?>">Delete</button>
+                                  </div>
+                              </td>
+
+ <!--Delete Modal-->
+ <div class="modal fade" id="deletepelangan<?=$idpelangan;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hapus Data Pelangan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body mb-3">
+                    <h5>Apakah Anda Yakin, ingin menghapus <?=$namaPelangan;?></h5>
+                    <input type="hidden" name="idPelangan" value="<?=$idpelangan;?>">
+                    <button type="submit" class="btn btn-danger" name="hapus_pelangan">Hapus</button>
+                </div>
+            </form>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
                           </tr>  
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editpelangan<?=$idpelangan;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit Data Pelangan</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                      <form method="POST">
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Pelangan</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="basic-default-name" name="namaPelangan" value="<?=$namaPelangan;?>" required/>
+                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Alamat</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="basic-default-name" name="alamat" value="<?=$alamat;?>" required/>
+                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-stok">No Telepon</label>
+                                          <div class="col-sm-10">
+                                            <input type="teks"
+                                             name = "telepon"
+                                             id="basic-default-stok"
+                                              class="form-control phone-mask"
+                                              aria-describedby="basic-default-stok"
+                                              value="<?=$noTelepon;?>"
+                                              required
+                                            />
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-10">
+                                        <input type="hidden" name="idpelangan" value="<?=$idpelangan;?>">
+                                          <button type="submit" class="btn btn-primary" name="update_pelangan">Update</button>
+                                        </div>
+                                        </form>
+                                      </div>
+                                      <div class="modal-footer">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                <!-- /Edit Modal-->
 
                           <?php
                             };//end of while                              

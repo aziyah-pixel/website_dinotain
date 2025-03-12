@@ -1,9 +1,19 @@
 <?php
-require "../include/function.php";
-$barang = mysqli_query($connection,"SELECT * FROM tbl_barang");
+session_start();
+
+if (!isset($_SESSION['tbl_user']['id_user'])) {
+  header('location: login.php'); // Alihkan ke halaman login jika tidak ada sesi
+  exit;
+}
+
+$id_user = $_SESSION['tbl_user']['id_user'];
+
+require "../include/function.php"; 
+$barang = mysqli_query($connection,"SELECT * FROM tbl_barang WHERE id_user = '$id_user'");
+$h1 = mysqli_num_rows($barang);//jumlah pelangan
 
 if(isset($_POST['hapus_barang'])){
-  $kodeBarang = $_POST['idBarang'];
+  $kodeBarang = $_POST['id_barang'];
 
   $hapus = mysqli_query($connection,"DELETE FROM tbl_barang WHERE id_barang='$kodeBarang'");
   if($hapus){
@@ -419,25 +429,23 @@ if(isset($_POST['hapus_barang'])){
                     <table id="tabel-data-barang" class="table table-striped table-bordered" width="100%" cellspacing="0">
                       <thead>
                             <tr>
-                              <th>Kode Produk</th>
+                              <th>No</th>
                               <th>Nama Produk</th>
                               <th>Harga</th>
                               <th>Action</th>
                             </tr>
                       </thead>
                           <tbody>
-                          <?php
-                              $get = mysqli_query($connection,"SELECT * FROM tbl_barang");
-                            
-
-                              while($barang=mysqli_fetch_array($get)){
-                              $kodeBarang = $barang['id_barang'];
-                              $namaBarang = $barang['nama_barang'];
-                              $harga = $barang['harga'];
+                          <?php                            
+                              $i = 1;
+                              while($dataBrg=mysqli_fetch_array($barang)){
+                              $kodeBarang = $dataBrg['id_barang'];
+                              $namaBarang = $dataBrg['nama_barang'];
+                              $harga = $dataBrg['harga'];
 
                             ?>
                             <tr>
-                                <td><?=$kodeBarang; ?></td>
+                                <td><?=$i++; ?></td>
                                 <td><?=$namaBarang; ?> </td>
                                 <td><?=$harga; ?></td>
                                 <td>
@@ -449,26 +457,26 @@ if(isset($_POST['hapus_barang'])){
                                   </div>
                                 </td>
 
-                                <!--Delete Modal-->
-                                <div class="modal fade" id="delete<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Barang</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <form method="post">
-                                      <div class="modal-body mb-3">
-                                          <h5>Apakah Anda Yakin, ingin menghapus <?=$namaBarang;?></h5>
-                                          <input type="hidden" name="idBarang" value="<?=$kodeBarang;?>">
-                                            <button type="button" class="btn btn-danger" name="hapus_barang">Hapus</button>
-                                     </div>
-                                     </form>
-                                      <div class="modal-footer">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                               <!--Delete Modal-->
+ <div class="modal fade" id="delete<?=$kodeBarang;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hapus Data Barang</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body mb-3">
+                    <h5>Apakah Anda Yakin, ingin menghapus <?=$namaBarang;?></h5>
+                    <input type="hidden" name="id_barang" value="<?=$kodeBarang;?>">
+                    <button type="submit" class="btn btn-danger" name="hapus_barang">Hapus</button>
+                </div>
+            </form>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
                                 <!--/Delete Modal -->
                                 
                             </tr>  
