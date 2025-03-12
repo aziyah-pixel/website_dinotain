@@ -176,7 +176,7 @@ if(isset($_POST['hapus_barang'])){
               <span class="menu-header-text">Pages</span>
             </li>
             <li class="menu-item">
-              <a href="pages-account-settings-account.php" class="menu-link">
+              <a href="setingAkun.php" class="menu-link">
               <i class='menu-icon tf-icons bx bx-user-circle'></i>
                 <div data-i18n="Analytics">Account</div>
               </a>

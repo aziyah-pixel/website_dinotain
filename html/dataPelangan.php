@@ -179,7 +179,7 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
               <span class="menu-header-text">Pages</span>
             </li>
             <li class="menu-item">
-              <a href="pages-account-settings-account.php" class="menu-link">
+              <a href="setingAkun.php" class="menu-link">
               <i class='menu-icon tf-icons bx bx-user-circle'></i>
                 <div data-i18n="Analytics">Account</div>
               </a>
@@ -424,14 +424,25 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
             <div class="container-xxl flex-grow-1 container-p-y">
               <div class="row">
 
-                <!-- Basic Layout -->
-                <div class="col-xxl">
-                  <div class="card mb-4">
-                    <div class="card-header d-flex align-items-center justify-content-between">
-                      <h5 class="mb-0">Input Data Pelangan</h5>
-                    </div>
-                    <div class="card-body">
-                      <form method="post" id="dataPelangganForm">
+
+
+                <!--Tabel Pelangan-->
+                <div class="card">
+                <h5 class="card-header">Data Pelangan/Member</h5>
+                <div class="card-header">
+              <div class="col-sm-10  ">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahpelangan">Tambah Data</button>
+                </div>
+                             <!-- Tambah Modal -->
+                               <div class="modal fade" id="tambahpelangan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Tambah Data Provinsi</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                      <form method="post" id="dataPelangganForm">
                       <input type="hidden" name="id_user" value="<?=$id_user; ?>">
                         <div class="row mb-3">
                           <label class="col-sm-2 col-form-label" for="basic-default-name">Nama</label>
@@ -474,15 +485,16 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                           </div>
                         </div>
                       </form>
-                    </div>
-                  </div>
+
+                                      </div>
+                                      <div class="modal-footer">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                            <!-- /tambah Modal-->
                 </div>
-                <!--/Basic Layout-->
-
-
-                <!--Tabel Pelangan-->
-                <div class="card">
-                <h5 class="card-header">Data Pelangan/Member</h5>
                   <div class="card-body">
                     <div class="table-responsive text-nowrap">
                     <table id="tabel-data-pelangan" class="table table-striped table-bordered" width="100%" cellspacing="0">

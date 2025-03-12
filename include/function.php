@@ -111,4 +111,36 @@ function searchartikel($keyword) {
   return queryReadData($querySearch);
 }
 
+//seting akun
+function updateAkun($account) {
+  global $connection;
+
+  // Ambil account dari array $account
+  $id_user = $account['iduser'];
+  $nama = $account['nama'];
+  $nama_usaha = $account['nama_usaha'];
+  $katagori_usaha = $account['kusaha'];
+  $email = $account['email'];
+  $no_tel = $account['phoneNumber'];
+  $provinsi = $account['provinsi'];
+  $alamat = $account['alamat'];
+  $kode_pos = $account['kode_pos'];
+  $pesan_nota = $account['pesan_nota'];
+
+  // Siapkan query untuk memperbarui data
+  $stmt = $connection->prepare("UPDATE tbl_user SET full_nama = ?, nama_usaha = ?, katagori_usaha = ?, email = ?, no_tel = ?, provinsi = ?, alamat = ?, kode_pos = ?, pesan_nota = ? WHERE id_user = ?");
+  
+  // Bind parameter
+  $stmt->bind_param("sssssssssi", $nama, $nama_usaha, $katagori_usaha, $email, $no_tel, $provinsi, $alamat, $kode_pos, $pesan_nota, $id_user);
+
+  // Eksekusi query
+  if ($stmt->execute()) {
+      return 1; // Mengembalikan 1 jika berhasil
+  } else {
+      return 0; // Mengembalikan 0 jika gagal
+  }
+
+  // Tutup statement
+  $stmt->close();
+}
 ?>

@@ -1,3 +1,36 @@
+<?php 
+session_start();
+
+if (!isset($_SESSION['tbl_user']['id_user'])) {
+  header('location: login.php'); // Alihkan ke halaman login jika tidak ada sesi
+  exit;
+}
+
+$id_user = $_SESSION['tbl_user']['id_user'];
+
+require "../include/function.php";
+
+if(isset($_POST["update_akun"]) ) {
+  
+  if(updateAkun($_POST) > 0) {
+    header('location: index.php');
+  }else {
+    echo "<script>
+    alert('Data user gagal diubah!');
+    </script>";
+  }
+}
+
+$provinsi = queryReadData("SELECT * FROM tbl_provinsi");
+$kategori = queryReadData("SELECT * FROM tbl_katagori");
+$akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_user'");
+
+//$informatika = "informatika";
+?>
+
+
+
+
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -144,7 +177,7 @@
               <span class="menu-header-text">Pages</span>
             </li>
             <li class="menu-item active">
-              <a href="pages-account-settings-account.php" class="menu-link">
+              <a href="setingAkun.php" class="menu-link">
               <i class='menu-icon tf-icons bx bx-user-circle'></i>
                 <div data-i18n="Analytics">Account</div>
               </a>
@@ -393,25 +426,36 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="card mb-4">
+                  <?php
+                           while ($dataUser = mysqli_fetch_array($akun)) {
+                               $username = $dataUser['full_nama'];
+                               $namaUsaha = $dataUser['nama_usaha'];
+                               $katagori_usaha = $dataUser['katagori_usaha'];
+                               $email = $dataUser['email'];
+                               $telepon = $dataUser['no_tel'];
+                               $provinsi = $dataUser['provinsi'];
+                               $alamat = $dataUser['alamat'];
+                               $kodepos = $dataUser['kode_pos'];
+                               $pesan = $dataUser['pesan_nota'];
+
+
+                          ?>
                     <!-- Account -->
                     <hr class="my-0" />
                     <div class="card-body">
                       <form id="formAccountSettings" method="POST" onsubmit="return false">
+                      <input type="hidden" name="id_user" value="<?=$id_user; ?>">
                         <div class="row">
                           <div class="mb-3 col-md-6">
-                            <label for="firstName" class="form-label">Username</label>
+                            <label for="firstName" class="form-label">Nama Pemilik</label>
                             <input
                               class="form-control"
                               type="text"
                               id="firstName"
-                              name="firstName"
-                              value=""
+                              name="nama"
+                              value="<?=$username;?>"
                               autofocus
                             />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="lastName" class="form-label">Password</label>
-                            <input class="form-control" type="text" name="lastName" id="lastName" />
                           </div>
                           <div class="mb-3 col-md-6">
                             <label for="firstName" class="form-label">nama usaha</label>
@@ -419,14 +463,19 @@
                               class="form-control"
                               type="text"
                               id="firstName"
-                              name="firstName"
-                              value=""
+                              name="nama_usaha"
+                              value="<?=$namaUsaha;?>"
                               autofocus
                             />
                           </div>
                           <div class="mb-3 col-md-6">
-                            <label for="lastName" class="form-label">kategori usaha</label>
-                            <input class="form-control" type="text" name="lastName" id="lastName" />
+                            <label for="timeZones" class="form-label">Katagori Usaha</label>
+                            <select id="timeZones" class="select2 form-select" value="<?=$katagori_usaha;?>" name="kusaha">
+                            <option selected>Choose</option>
+                              <?php foreach ($kategori as $item) : ?>
+                              <option><?= $item["nama_katagori"]; ?></option>
+                              <?php endforeach; ?>
+                            </select>
                           </div>
                           <div class="mb-3 col-md-6">
                             <label for="email" class="form-label">E-mail</label>
@@ -435,7 +484,7 @@
                               type="text"
                               id="email"
                               name="email"
-                              value="@gmail.com"
+                              value="<?=$email;?>"
                               placeholder="@gmail.com"
                             />
                           </div>
@@ -448,17 +497,22 @@
                                 id="phoneNumber"
                                 name="phoneNumber"
                                 class="form-control"
+                                value="<?=$telepon;?>"
                               />
                             </div>
                           </div>
                           <div class="mb-3 col-md-6">
                             <label for="timeZones" class="form-label">provinsi</label>
-                            <select id="timeZones" class="select2 form-select">
+                            <select id="timeZones" class="select2 form-select" name="provinsi">
+                            <option>Choose</option>
+                              <?php foreach ($provinsi as $pro) : ?>
+                              <option><?= $pro["provinsi"]; ?></option>
+                              <?php endforeach; ?>
                             </select>
                           </div>
                           <div class="mb-3 col-md-6">
                             <label for="state" class="form-label">alamat</label>
-                            <input class="form-control" type="text" id="state" name="state" />
+                            <input class="form-control" type="text" id="state" name="alamat" value="<?=$alamat;?>" />
                           </div>
                           <div class="mb-3 col-md-6">
                             <label for="zipCode" class="form-label">kode pos</label>
@@ -466,22 +520,26 @@
                               type="text"
                               class="form-control"
                               id="zipCode"
-                              name="zipCode"
+                              name="kode_pos"
                               maxlength="6"
+                              value="<?=$kodepos;?>"
                             />
                           </div>
                           <div class="mb-3 col-md-6">
                             <label for="state" class="form-label">pesan nota</label>
-                            <input class="form-control" type="text" id="state" name="state" />
+                            <input class="form-control" type="text" id="state" name="pesan_nota" value="<?=$pesan;?>" />
                           </div>
                         </div>
                         <div class="mt-2">
-                          <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                          <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                          <input type="hidden" name="iduser" value="<?=$id_user; ?>">
+                          <button type="submit" class="btn btn-primary me-2" name="update_akun">Save changes</button>
                         </div>
                       </form>
                     </div>
                     <!-- /Account -->
+                    <?php
+                            };//end of while                              
+                            ?>
                   </div>
                 </div>
               </div>
