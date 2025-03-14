@@ -166,12 +166,35 @@ function tambahDetailTransaksi($dataDetailBarang) {
   $namabarang = htmlspecialchars($dataDetailBarang["namabarang"]);
   $qty = htmlspecialchars($dataDetailBarang["qty"]);  
   $tanggal = htmlspecialchars($dataDetailBarang["waktu"]);
-  $pelangan = htmlspecialchars($dataDetailBarang["idpel"]);    
+  $pelangan = htmlspecialchars($dataDetailBarang["idpel"]);  
+  $harga = htmlspecialchars($dataDetailBarang["harga"]);   
   
-  $queryInsertDataDetail = "INSERT INTO tbl_detail_transaksi VALUES('', '$kodeTransaksi', '$id_user', '$pelangan', '$namabarang', '$qty', '$tangga')";
+  $queryInsertDataDetail = "INSERT INTO tbl_detail_transaksi VALUES('', '$kodeTransaksi', '$id_user', '$pelangan', '$namabarang', '$qty', '$harga', '$tanggal')";
   
   mysqli_query($connection, $queryInsertDataDetail);
   return mysqli_affected_rows($connection);
   
 }  
+
+// Updete data transaksi
+if(isset($_POST['transaksi'])){
+  $transaksi = $_POST['idtransaksi'];
+  $total = $_POST['total'];
+  $bayar = $_POST['bayar'];
+  $tanggal = $_POST['tu'];
+  
+  $updateTransaksi = mysqli_query($connection,"UPDATE tbl_transaksi SET total='$total', total_bayar='$bayar', tanggal='$tanggal' WHERE kode_transaksi='$transaksi'");
+
+  if($updateTransaksi){
+    $_SESSION['transaksi_berhasil'] = true;
+    } else {
+      echo"<script>
+      alert('transaksi gagal');
+      </script>";
+    }
+}
+
+
+
+
 ?>

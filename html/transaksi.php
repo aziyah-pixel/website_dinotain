@@ -12,7 +12,9 @@ require "../include/function.php";
 $data = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_user'");
 while($datauser=mysqli_fetch_array($data)){
   $nama = $datauser['full_nama'];
-};
+}
+
+var_dump($nama); 
 
 $pelangan = queryReadData("SELECT * FROM tbl_pelangan");
 
@@ -452,7 +454,7 @@ if(isset($_POST["dataTransaksi"]) ) {
                           <input type="hidden" name="id_user" id="" value="<?=$id_user?>">
                           <label class="col-sm-2 col-form-label" for="basic-default-name">nama Kasir</label>
                           <div class="col-sm-10">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name"> <?=$nama;?></label>
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">: <?=$nama;?></label>
                           </div>
                         </div>
                         <div class="row mb-3">

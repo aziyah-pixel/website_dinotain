@@ -5,6 +5,16 @@ if (!isset($_SESSION['tbl_user']['id_user'])) {
   header('location: ../Sign/login.php'); // Alihkan ke halaman login jika tidak ada sesi
   exit;
 }
+
+if (isset($_SESSION['transaksi_berhasil'])) {
+  echo "<script>
+      $(document).ready(function() {
+          $('#transaksiBerhasil').modal('show');
+      });
+  </script>";
+  unset($_SESSION['transaksi_berhasil']); // Hapus session setelah ditampilkan
+}
+
 $id_user = $_SESSION['tbl_user']['id_user'];
 
 require "../include/function.php"; 
@@ -33,7 +43,20 @@ if (!empty($pelanggan) && is_array($pelanggan) && isset($pelanggan[0]['nama_pela
 $barang = queryReadData("SELECT * FROM tbl_barang WHERE id_user='$id_user'");
 
 
+if(isset($_POST["tambah"]) ) {
+  
+  if(tambahDetailTransaksi($_POST) > 0) {
+    header('location: detail_transaksi.php?id_transaksi='.$kodeTransaksi);
+  }else {
+    echo "<script>
+    alert('Data gagal ditambahkan!');
+    </script>";
+  }
+}
 
+$Detail = mysqli_query($connection,"SELECT * FROM tbl_detail_transaksi WHERE kode_transaksi = '$kodeTransaksi'");
+$totalBelanjaan = 0; 
+$h1 = mysqli_num_rows($Detail);//jumlah pelangan
 ?>
 <!DOCTYPE html>
 
@@ -96,6 +119,8 @@ $barang = queryReadData("SELECT * FROM tbl_barang WHERE id_user='$id_user'");
     <link rel="stylesheet" href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
     <link href="../DataTables/datatables.min.css" rel="stylesheet">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../assets/vendor/js/bootstrap.js"></script>
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
 
@@ -444,6 +469,7 @@ $barang = queryReadData("SELECT * FROM tbl_barang WHERE id_user='$id_user'");
                         <div class="row">
                           <label class="col-sm-2 col-form-label" for="basic-default-name">Kode Transaksi</label>
                           <div class="col-sm-10">
+                            <input type="hidden" name="idtransaksi" id="" value="<?=$kodeTransaksi;?>">
                           <label class="col-sm-2 col-form-label" for="basic-default-name">: <?=$kodeTransaksi;?></label>
                           </div>
                         </div>
@@ -482,12 +508,25 @@ $barang = queryReadData("SELECT * FROM tbl_barang WHERE id_user='$id_user'");
                                         <div class="row mb-3">
                                           <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Barang</label>
                                           <div class="col-sm-10">
-                                          <select id="timeZones" class="select2 form-select"  name="namabarang">
+                                          <select id="timeZones" class="select2 form-select"  name="namabarang" onchange="fetchPrice(this.value)">
                                             <option selected>Choose</option>
-                                            <?php foreach ($barang as $item) : ?>
-                                            <option><?= $item["nama_barang"]; ?></option>
+                                            <?php foreach ($barang as $item) :?>
+                                            <option> <?= $item["nama_barang"]; ?></option>
                                             <?php endforeach; ?>
-                                            </select>                                          </div>
+                                            </select>                                          
+                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-alamat" >Harga</label>
+                                          <div class="col-sm-10">
+                                            <input
+                                              type="text"
+                                              name="harga"
+                                              class="form-control"
+                                              id="harga"
+                                              readonly
+                                            />
+                                          </div>
                                         </div>
                                         <div class="row mb-3">
                                           <label class="col-sm-2 col-form-label" for="basic-default-name">Qty</label>
@@ -517,25 +556,73 @@ $barang = queryReadData("SELECT * FROM tbl_barang WHERE id_user='$id_user'");
                       <thead>
                             <tr>
                               <th>No</th>
-                              <th>Nama Produk</th>
+                              <th>Nama Barang</th>
                               <th>Harga</th>
+                              <th>Qty</th>
+                              <th>Total</th>
                               <th>Action</th>
                             </tr>
                       </thead>
                           <tbody>
+                          <?php
+                           $i = 1; // penomoran
+                           while ($detailTransaksi = mysqli_fetch_array($Detail)) {
+                               $nama_brg = $detailTransaksi['nama_barang'];
+                               $harga = $detailTransaksi['harga'];
+                               $qty = $detailTransaksi['qty'];
+                               $total = $harga * $qty;
+                               $totalBelanjaan += $total;                          ?>
+
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                </td>                                
-                            </tr>  
+                                <td><?=$i++;?></td>
+                                <td><?=$nama_brg;?></td>
+                                <td><?=$harga;?></td>
+                                <td><?=$qty;?></td> 
+                                <td><?=$total;?></td>                                
+                                <td>action</td>                                
+                            </tr> 
+                            
+                            <?php
+                            };//end of while                              
+                            ?>
+
                           </tbody>
                     </table>  
                   </div>
-                  <div class="col-sm-10 mt-3">
-                      <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                 </div>
+
+                  <div class="row">
+                  <input type="hidden" name="tu" id="" value="<?php
+                                            echo date('d-m-Y H:i:s'); // Format: DD-BB-TTTT HH:MM:SS
+                                        ?>"/>
+                          <label class="col-sm-8 col-form-label text-end" for="basic-default-name">Total Belanjaan</label>
+                          <div class="col-sm-4">
+                            <input type="text" name="total" id="total" value="<?=$totalBelanjaan;?>" readonly/>
+                          </div>
+                </div>
+                <div class="row">
+                          <label class="col-sm-8 col-form-label text-end" for="basic-default-name">Total Bayar</label>
+                          <div class="col-sm-4">
+                            <input type="text" name="bayar" id="bayar" oninput="calculateChange()"/>
+                          </div>
+                </div>
+                <div class="row">
+                          <label class="col-sm-8 col-form-label text-end" for="basic-default-name">Kembalian</label>
+                          <div class="col-sm-4">
+                            <input type="text" name="kembalian" id="kembalian" readonly/>
+                          </div>
+                </div>
+                <div class="row">
+                          <label class="col-sm-8 col-form-label text-end" for="basic-default-name"></label>
+                          <div class="col-sm-4">
+                          <button type="submit" class="btn btn-danger" name="transaksi">Bayar</button>                          </div>
+
+                          <!--bayar Modal-->
+                </div>
+
+
+
+               
+
                 </div>
               </div>
 
@@ -565,6 +652,28 @@ $barang = queryReadData("SELECT * FROM tbl_barang WHERE id_user='$id_user'");
         </div>
         <!-- / Layout page -->
       </div>
+
+       <!-- Modal Konfirmasi Transaksi Berhasil -->
+<div class="modal fade" id="transaksiBerhasil" tabindex="-1" aria-labelledby="transaksiBerhasilLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transaksiBerhasilLabel">Transaksi Berhasil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Transaksi Anda berhasil. Apakah Anda ingin mencetak struk?
+            </div>
+            <div class="modal-footer">
+                <a href="..//export/exportBarang.php?id_transaksi=<?=$kodeTransaksi;?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Cetak</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal Konfirmasi Transaksi Berhasil -->
+
+
 
       <!-- Overlay -->
       <div class="layout-overlay layout-menu-toggle"></div>
@@ -598,32 +707,28 @@ $barang = queryReadData("SELECT * FROM tbl_barang WHERE id_user='$id_user'");
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <script>
-      const form = document.querySelector('form');
-      const additionalForm = form.elements.additionalForm;
-      const member = form.elements.member;
-
-      if (additionalForm) {
-        additionalForm.hidden = true;
-      }
-
-      if (member) {
-        member.setAttribute('aria-expanded', false);
-        member.setAttribute('aria-controls', member.dataset.controls);
-
-        member.addEventListener('click', (event) => {
-          let isChecked = event.target.checked;
-
-          if (isChecked) {
-            event.target.setAttribute('aria-expanded', true);
-            additionalForm.hidden = false;
-          } else {
-            event.target.setAttribute('aria-expanded', false);
-            additionalForm.hidden = true;
-          }
+function fetchPrice(nama_barang) {
+    if (nama_barang) {
+        $.ajax({
+            url: 'get_harga_barang.php', // Ganti dengan URL yang sesuai
+            type: 'GET',
+            data: { id: nama_barang },
+            success: function(data) {
+                $('#harga').val(data); // Set nilai harga ke input harga
+            }
         });
-      }
+    } else {
+        $('#harga').val(''); // Kosongkan jika tidak ada barang yang dipilih
+    }
+}
 
-    </script>
+function calculateChange() {
+        var total = parseFloat($('#total').val()) || 0;
+        var bayar = parseFloat($('#bayar').val()) || 0;
+        var kembalian = bayar - total;
+        $('#kembalian').val(kembalian >= 0 ? kembalian : 0); // Tampilkan kembalian, tidak boleh negatif
+    }
+</script>
 
     <script>
     $(document).ready(function(){

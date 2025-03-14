@@ -25,7 +25,7 @@ if(isset($_POST['update_user'])){
         alert('Data User gagal diupdate!');
         </script>";
       }
-  }
+}
 
 //hapus data user
 if(isset($_POST['hapus_user'])){
@@ -288,6 +288,24 @@ if(isset($_POST['update_pesan'])){
     } else {
       echo"<script>
       alert('pesan gagal dibalas!');
+      </script>";
+    }
+}
+
+// Updete data transaksi
+if(isset($_POST['transaksi'])){
+  $transaksi = $_POST['idtransaksi'];
+  $total = $_POST['total'];
+  $bayar = $_POST['bayar'];
+  $tanggal = $_POST['to'];
+  
+  $updateTransaksi = mysqli_query($connection,"UPDATE tbl_transaksi SET total='$total', total_bayar='$bayar', tanggal='$tanggal' WHERE kode_transaksi='$transaksi'");
+
+  if($updateTransaksi){
+    header('location:.php');
+    } else {
+      echo"<script>
+      alert('Data User gagal diupdate!');
       </script>";
     }
 }
