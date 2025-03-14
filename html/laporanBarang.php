@@ -532,7 +532,7 @@ if(isset($_POST['hapus_barang'])){
                   </div>
                   <div class="col-sm-10 mt-3">
                       <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                  </div
+                 </div>
                 </div>
               </div>
 
@@ -540,6 +540,7 @@ if(isset($_POST['hapus_barang'])){
               </div>
             </div>
             <!-- / Content -->
+                            </div>
 
             <!-- Footer -->
             <footer class="content-footer footer bg-footer-theme">

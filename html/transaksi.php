@@ -1,3 +1,48 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['tbl_user']['id_user'])) {
+  header('location: ../Sign/login.php'); // Alihkan ke halaman login jika tidak ada sesi
+  exit;
+}
+$id_user = $_SESSION['tbl_user']['id_user'];
+
+require "../include/function.php"; 
+
+$data = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_user'");
+while($datauser=mysqli_fetch_array($data)){
+  $nama = $datauser['full_nama'];
+};
+
+$pelangan = queryReadData("SELECT * FROM tbl_pelangan");
+
+// Mengambil kode transaksi terakhir
+$sql = "SELECT kode_transaksi FROM tbl_transaksi ORDER BY kode_transaksi DESC LIMIT 1";
+$result = $connection->query($sql);
+
+$kodeTransaksi = 'TRN1'; // Default jika tidak ada transaksi
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    // Mengambil nomor dari kode transaksi terakhir
+    $lastKode = $row['kode_transaksi'];
+    $lastNumber = (int)substr($lastKode, 3); // Mengambil angka setelah 'TRN'
+    $newNumber = $lastNumber + 1; // Menambah satu
+    $kodeTransaksi = 'TRN' . $newNumber; // Membuat kode transaksi baru
+}
+
+if(isset($_POST["dataTransaksi"]) ) {
+  
+  if(tambahdataTransaksi($_POST) > 0) {
+    header("Location: detail_transaksi.php?id_transaksi=".$kodeTransaksi);
+  }else {
+    echo "<script>
+    alert('Data ada yang salah!');
+    </script>";
+  }
+}
+
+
+?>
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -396,45 +441,70 @@
                 <div class="col-xxl">
                   <div class="card mb-4">
                     <div class="card-header d-flex align-items-center justify-content-between">
-                      <h5 class="mb-0">TRANSAKSI PEMBAYARAN</h5>
+                      <h5 class="mb-0">TRANSAKSI PENJUALAN</h5>
+                      <label for=""><?php
+                            echo date('d-m-Y H:i:s'); // Format: DD-BB-TTTT HH:MM:SS
+                        ?></label>
                     </div>
                     <div class="card-body">
                       <form method="post" id="datatransaksiForm">
-                      <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name">tgl Pembayaran</label>
+                        <div class="row mb-3">
+                          <input type="hidden" name="id_user" id="" value="<?=$id_user?>">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">nama Kasir</label>
                           <div class="col-sm-10">
-                          <input type="date" id="tglPembayaran" value="">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name"> <?=$nama;?></label>
                           </div>
                         </div>
                         <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name">nama barang</label>
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">Kode Transaksi</label>
                           <div class="col-sm-10">
-                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="nama_barang" require/>
-                          </div>
+                          <input
+                              class="form-control"
+                              type="text"
+                              id="kodetransaksi"
+                              name="kodetransaksi"
+                              value="<?=$kodeTransaksi;?>"
+                              readonly/>                          </div>
                         </div>
                         <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name">Qty Barang</label>
-                          <div class="col-sm-10">
-                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="qty_barang" require/>
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">Jenis Pelangan</label>
+                          <div class="col-sm-2">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck3" />
+                            <label class="form-check-label" for="defaultCheck3"> Umum </label>
                           </div>
                         </div>
+                         <div class="col-sm-3">
+                          <div class="form-check">
+                            <input 
+                              class="form-check-input" 
+                              name="member"
+                              id="member"
+                              data-controls="additionalForm"
+                              type="checkbox" value="" />
+                            <label class="form-check-label" for="defaultCheck3"> Member </label>
+                          </div>
+                        </div>
+                        <fieldset class="additional-form-group" id="additionalForm">
                         <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name">Harga barang</label>
-                          <div class="col-sm-10">
-                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="harga_barang" require/>
+                          <div class="col-sm-2 col-form-label">
+                          <label for="exampleFormControlSelect1" class="form-label">Nama Pelangan</label>
                           </div>
-                        </div>
-                        <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label" for="basic-default-name">Total Pembayaran (Rp.)</label>
                           <div class="col-sm-10">
-                            <input type="text" class="form-control" id="basic-default-name" placeholder="" name="total_pembayaran" require/>
-                          </div>
+                          <select class="form-select col-sm-10" id="exampleFormControlSelect1" aria-label="Default select example" name="pelangan">
+                            <option selected>pilih Pelangan</option>
+                            <?php foreach ($pelangan as $item) : ?>
+                              <option><?= $item["id_pelangan"]; ?>. <?= $item["nama_pelangan"]; ?></option>
+                              <?php endforeach; ?>
+                          </select>
                         </div>
-
-                        <div class="row justify-content-end">
+                        </div>
+                        </fieldset>
+                       
+                        <div class="row mt-3">
+                        <div class="col-sm-2 col-form-label"></div>
                           <div class="col-sm-10">
-                            <button type="submit" class="btn btn-primary" name="transaksi">SIMPAN PEMBAYARAN</button>
-                            <input type="reset" class="btn btn-warning" value="Reset">
+                          <a  href="detail_transaksi.php" id="review"><button type="submit" class="btn btn-primary" name="dataTransaksi">Selanjutnya</button></a>
                           </div>
                         </div>
                       </form>
@@ -442,38 +512,10 @@
                   </div>
                 </div>
                 <!--/Basic Layout-->
-
-          <!--Tabel transaksi-->
-          <div class="card">
-                  <div class="card-body">
-                    <div class="table-responsive text-nowrap">
-                    <table id="tabel-data-transaksi" class="table table-striped table-bordered" width="100%" cellspacing="0">
-                    <div>
-                      <p>Daftar Barang masuk</p>
-                    </div>
-                    <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Nama Barang</th>
-                            <th>harga</th>
-                            <th>Qty</th>
-                            <th>total</th>
-                            <th>Action</th>
-                          </tr>
-                      </thead>
-                    </table>  
-                    </div>
-                    <div class="col-sm-10 mt-3">
-                      <a href="..//export/exportransaksi.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                    </div>
-                  </div>
-                </div>
-          <!-- / Tabel transaksi -->
-
               </div>
             </div>
             <!-- / Content -->
-
+          </div>
             <!-- Footer -->
             <footer class="content-footer footer bg-footer-theme">
               <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
@@ -523,11 +565,34 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-
     <script>
-    $(document).ready(function(){
-        $('#tabel-data-transaksi').DataTable();
-    });
+      const form = document.querySelector('form');
+      const additionalForm = form.elements.additionalForm;
+      const member = form.elements.member;
+
+      if (additionalForm) {
+        additionalForm.hidden = true;
+      }
+
+      if (member) {
+        member.setAttribute('aria-expanded', false);
+        member.setAttribute('aria-controls', member.dataset.controls);
+
+        member.addEventListener('click', (event) => {
+          let isChecked = event.target.checked;
+
+          if (isChecked) {
+            event.target.setAttribute('aria-expanded', true);
+            additionalForm.hidden = false;
+          } else {
+            event.target.setAttribute('aria-expanded', false);
+            additionalForm.hidden = true;
+          }
+        });
+      }
+
     </script>
+
+   
   </body>
 </html>

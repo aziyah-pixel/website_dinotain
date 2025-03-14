@@ -143,4 +143,35 @@ function updateAkun($account) {
   // Tutup statement
   $stmt->close();
 }
+
+function tambahdataTransaksi($dataTransaksi) {
+  global $connection;
+  
+  $kodeTransaksi = htmlspecialchars($dataTransaksi["kodetransaksi"]);
+  $id_pelangan = htmlspecialchars($dataTransaksi["pelangan"]);
+  $id_user = htmlspecialchars($dataTransaksi["id_user"]);
+  
+  $queryInsertTransaksi = "INSERT INTO tbl_transaksi (kode_transaksi, id_pelangan, id_user) VALUES('$kodeTransaksi', '$id_pelangan', '$id_user')";
+  
+  mysqli_query($connection, $queryInsertTransaksi);
+  return mysqli_affected_rows($connection);
+  
+}  
+
+function tambahDetailTransaksi($dataDetailBarang) {
+  global $connection;
+  
+  $kodeTransaksi = htmlspecialchars($dataDetailBarang["idtransaksi"]);
+  $id_user = htmlspecialchars($dataDetailBarang["iduse"]);
+  $namabarang = htmlspecialchars($dataDetailBarang["namabarang"]);
+  $qty = htmlspecialchars($dataDetailBarang["qty"]);  
+  $tanggal = htmlspecialchars($dataDetailBarang["waktu"]);
+  $pelangan = htmlspecialchars($dataDetailBarang["idpel"]);    
+  
+  $queryInsertDataDetail = "INSERT INTO tbl_detail_transaksi VALUES('', '$kodeTransaksi', '$id_user', '$pelangan', '$namabarang', '$qty', '$tangga')";
+  
+  mysqli_query($connection, $queryInsertDataDetail);
+  return mysqli_affected_rows($connection);
+  
+}  
 ?>

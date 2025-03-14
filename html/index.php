@@ -488,7 +488,7 @@ if(isset($_POST["cari_artikel"]) ) {
               <?php foreach ($artikel as $item) : ?>
                 <div class="col">
                   <div class="card">
-                    <img class="card-img-top" src="../admin/imgDB/<?=$item["foto"]; ?>" alt="Card image cap" />
+                    <img class="card-img-top" src="../admin/imgDB/<?=$item["foto"]; ?>" alt="Card image cap" style="height: 200px; object-fit: cover;"/>
                     <div class="card-body">
                       <h5 class="card-title"><?= $item["judul_artikel"]; ?></h5>
                       <span class="more-content">

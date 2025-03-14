@@ -1,36 +1,40 @@
-<?php 
+<?php
 session_start();
 
 if (!isset($_SESSION['tbl_user']['id_user'])) {
-  header('location: login.php'); // Alihkan ke halaman login jika tidak ada sesi
+  header('location: ../Sign/login.php'); // Alihkan ke halaman login jika tidak ada sesi
   exit;
 }
-
 $id_user = $_SESSION['tbl_user']['id_user'];
 
-require "../include/function.php";
+require "../include/function.php"; 
+$data = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_user'");
+while($datauser=mysqli_fetch_array($data)){
+  $nama = $datauser['full_nama'];
+};
 
-if(isset($_POST["update_akun"]) ) {
-  
-  if(updateAkun($_POST) > 0) {
-    header('location: index.php');
-  }else {
-    echo "<script>
-    alert('Data user gagal diubah!');
-    </script>";
-  }
+$kodeTransaksi = $_GET["id_transaksi"];
+var_dump($kodeTransaksi);
+$dataTransaksi = queryReadData("SELECT * FROM tbl_transaksi WHERE kode_transaksi='$kodeTransaksi'");
+
+if (empty($dataTransaksi) || !is_array($dataTransaksi) || !isset($dataTransaksi[0])) {
+    die("Data tidak ditemukan.");
+}
+// Ambil id_user dan id_pelangan dari data transaksi
+$idUser  = $dataTransaksi[0]['id_user'];
+$idPelanggan = $dataTransaksi[0]['id_pelangan']; 
+
+$pelanggan = queryReadData("SELECT nama_pelangan FROM tbl_pelangan WHERE id_pelangan = '$idPelanggan'");
+$namaPelanggan = "Umum";
+if (!empty($pelanggan) && is_array($pelanggan) && isset($pelanggan[0]['nama_pelangan'])) {
+    $namaPelanggan = $pelanggan[0]['nama_pelangan']; // Ambil nama pelanggan
 }
 
-$provinsi = queryReadData("SELECT * FROM tbl_provinsi");
-$kategori = queryReadData("SELECT * FROM tbl_katagori");
-$akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_user'");
+$barang = queryReadData("SELECT * FROM tbl_barang WHERE id_user='$id_user'");
 
-//$informatika = "informatika";
+
+
 ?>
-
-
-
-
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -60,7 +64,7 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Account settings - Account | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+    <title>Dashboard dinotain</title>
 
     <meta name="description" content="" />
 
@@ -86,7 +90,11 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
+    <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
+
     <!-- Page CSS -->
+    <link rel="stylesheet" href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+    <link href="../DataTables/datatables.min.css" rel="stylesheet">
 
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
@@ -127,7 +135,7 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
             </li>
 
              <!-- Transaksi -->
-             <li class="menu-item">
+             <li class="menu-item active">
               <a href="transaksi.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-cart-alt"></i>
                 <div data-i18n="Analytics">Transaksi</div>
@@ -176,7 +184,7 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Pages</span>
             </li>
-            <li class="menu-item active">
+            <li class="menu-item">
               <a href="setingAkun.php" class="menu-link">
               <i class='menu-icon tf-icons bx bx-user-circle'></i>
                 <div data-i18n="Analytics">Account</div>
@@ -421,131 +429,122 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
             <!-- Content -->
 
             <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Account/</span> Settings</h4>
-
               <div class="row">
-                <div class="col-md-12">
-                  <div class="card mb-4">
-                  <?php
-                           while ($dataUser = mysqli_fetch_array($akun)) {
-                               $username = $dataUser['full_nama'];
-                               $namaUsaha = $dataUser['nama_usaha'];
-                               $katagori_usaha = $dataUser['katagori_usaha'];
-                               $email = $dataUser['email'];
-                               $telepon = $dataUser['no_tel'];
-                               $provinsi = $dataUser['provinsi'];
-                               $alamat = $dataUser['alamat'];
-                               $kodepos = $dataUser['kode_pos'];
-                               $pesan = $dataUser['pesan_nota'];
 
-
-                          ?>
-                    <!-- Account -->
-                    <hr class="my-0" />
-                    <div class="card-body">
-                      <form id="formAccountSettings" method="POST" onsubmit="return false">
-                      <input type="hidden" name="id_user" value="<?=$id_user; ?>">
-                        <div class="row">
-                          <div class="mb-3 col-md-6">
-                            <label for="firstName" class="form-label">Nama Pemilik</label>
-                            <input
-                              class="form-control"
-                              type="text"
-                              id="firstName"
-                              name="nama"
-                              value="<?=$username;?>"
-                              autofocus
-                            />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="firstName" class="form-label">nama usaha</label>
-                            <input
-                              class="form-control"
-                              type="text"
-                              id="firstName"
-                              name="nama_usaha"
-                              value="<?=$namaUsaha;?>"
-                              autofocus
-                            />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="timeZones" class="form-label">Katagori Usaha</label>
-                            <select id="timeZones" class="select2 form-select" value="<?=$katagori_usaha;?>" name="kusaha">
-                            <option selected>Choose</option>
-                              <?php foreach ($kategori as $item) : ?>
-                              <option><?= $item["nama_katagori"]; ?></option>
-                              <?php endforeach; ?>
-                            </select>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="email" class="form-label">E-mail</label>
-                            <input
-                              class="form-control"
-                              type="text"
-                              id="email"
-                              name="email"
-                              value="<?=$email;?>"
-                              placeholder="@gmail.com"
-                            />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="phoneNumber">no tlfpn</label>
-                            <div class="input-group input-group-merge">
-                              <span class="input-group-text"></span>
-                              <input
-                                type="text"
-                                id="phoneNumber"
-                                name="phoneNumber"
-                                class="form-control"
-                                value="<?=$telepon;?>"
-                              />
-                            </div>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="timeZones" class="form-label">provinsi</label>
-                            <select id="timeZones" class="select2 form-select" name="provinsi">
-                            <option>Choose</option>
-                              <?php foreach ($provinsi as $item) : ?>
-                              <option><?= $item["provinsi"]; ?></option>
-                              <?php endforeach; ?>
-                            </select>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="state" class="form-label">alamat</label>
-                            <input class="form-control" type="text" id="state" name="alamat" value="<?=$alamat;?>" />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="zipCode" class="form-label">kode pos</label>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="zipCode"
-                              name="kode_pos"
-                              maxlength="6"
-                              value="<?=$kodepos;?>"
-                            />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="state" class="form-label">pesan nota</label>
-                            <input class="form-control" type="text" id="state" name="pesan_nota" value="<?=$pesan;?>" />
-                          </div>
-                        </div>
-                        <div class="mt-2">
-                          <input type="hidden" name="iduser" value="<?=$id_user; ?>">
-                          <button type="submit" class="btn btn-primary me-2" name="update_akun">Save changes</button>
-                        </div>
-                      </form>
+              <form method="post" id="detailtransaksiForm">
+                <div class="card">
+                <h5 class="card-header text-center">Transaksi Penjualan</h5>
+               <div class="card-body">
+                
+                    <div class="row mb-3">
+                    <label for="" class="text-end"><?php
+                            echo date('d-m-Y H:i:s'); // Format: DD-BB-TTTT HH:MM:SS
+                        ?></label>
                     </div>
-                    <!-- /Account -->
-                    <?php
-                            };//end of while                              
-                            ?>
+                        <div class="row">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">Kode Transaksi</label>
+                          <div class="col-sm-10">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">: <?=$kodeTransaksi;?></label>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">nama Kasir</label>
+                          <div class="col-sm-10">
+                          <label class="col-sm-10 col-form-label" for="basic-default-name">: <?=$nama;?></label>
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Pelangan</label>
+                          <div class="col-sm-10">
+                          <label class="col-sm-2 col-form-label" for="basic-default-name">: <?= htmlspecialchars($namaPelanggan); ?> </label>
+                        </div>
+                        </div>
+                       
+                        <div class="row mb-1">
+                          <div class="col-sm-10">
+                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahTransaksi<?=$kodeTransaksi;?>">Tambah Barang</button>
+
+                          <!-- tambah Modal -->
+<div class="modal fade" id="tambahTransaksi<?=$kodeTransaksi;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Tambah Barang</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                      <form method="POST">
+                                        <input type="hidden" name="waktu" id="" value="<?php
+                                            echo date('d-m-Y H:i:s'); // Format: DD-BB-TTTT HH:MM:SS
+                                        ?>">
+                                        <input type="hidden" name="iduse" id="" value="<?=$id_user;?>">
+                                        <input type="hidden" name="idpel" id="" value="<?=$idPelanggan;?>">
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Barang</label>
+                                          <div class="col-sm-10">
+                                          <select id="timeZones" class="select2 form-select"  name="namabarang">
+                                            <option selected>Choose</option>
+                                            <?php foreach ($barang as $item) : ?>
+                                            <option><?= $item["nama_barang"]; ?></option>
+                                            <?php endforeach; ?>
+                                            </select>                                          </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Qty</label>
+                                          <div class="col-sm-10">
+                                          <input type="number" class="form-control" id="basic-default-name" placeholder="" name="qty" require/>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-10">
+                                        <input type="hidden" name="idtransaksi" value="<?=$kodeTransaksi;?>">
+                                          <button type="submit" class="btn btn-primary" name="tambah">Tambah</button>
+                                        </div>
+                                        </form>
+                                      </div>
+                                      <div class="modal-footer">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                <!-- /tambah-->
+                          </div>
+                        </div>
+               </div>
+                <div class="card-body">
+                  <div class="table-responsive text-nowrap">
+                    <table id="tabel-data-transaksi" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                      <thead>
+                            <tr>
+                              <th>No</th>
+                              <th>Nama Produk</th>
+                              <th>Harga</th>
+                              <th>Action</th>
+                            </tr>
+                      </thead>
+                          <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                </td>                                
+                            </tr>  
+                          </tbody>
+                    </table>  
                   </div>
+                  <div class="col-sm-10 mt-3">
+                      <a href="..//export/exportBarang.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
+                 </div>
                 </div>
+              </div>
+
+              </form>
+
               </div>
             </div>
             <!-- / Content -->
-
+          </div>
             <!-- Footer -->
             <footer class="content-footer footer bg-footer-theme">
               <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
@@ -554,7 +553,7 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
                   <script>
                     document.write(new Date().getFullYear());
                   </script>
-                  , made with ❤️ by Nanda & Nyla||ITB AAS Indonesia
+                  ,made with ❤️ by Nanda & Nyla || ITB AAS INDONESIA
                 </div>
               </div>
             </footer>
@@ -584,14 +583,52 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
     <!-- endbuild -->
 
     <!-- Vendors JS -->
+    <script src="../assets/vendor/libs/apex-charts/apexcharts.js"></script>
 
     <!-- Main JS -->
     <script src="../assets/js/main.js"></script>
 
     <!-- Page JS -->
-    <script src="../assets/js/pages-account-settings-account.js"></script>
+    <script src="../assets/js/dashboards-analytics.js"></script>
+
+    <script src="../DataTables/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-  </body>
+
+    <script>
+      const form = document.querySelector('form');
+      const additionalForm = form.elements.additionalForm;
+      const member = form.elements.member;
+
+      if (additionalForm) {
+        additionalForm.hidden = true;
+      }
+
+      if (member) {
+        member.setAttribute('aria-expanded', false);
+        member.setAttribute('aria-controls', member.dataset.controls);
+
+        member.addEventListener('click', (event) => {
+          let isChecked = event.target.checked;
+
+          if (isChecked) {
+            event.target.setAttribute('aria-expanded', true);
+            additionalForm.hidden = false;
+          } else {
+            event.target.setAttribute('aria-expanded', false);
+            additionalForm.hidden = true;
+          }
+        });
+      }
+
+    </script>
+
+    <script>
+    $(document).ready(function(){
+        $('#tabel-data-transaksi').DataTable();
+    });
+    </script>
+  </body>
 </html>
