@@ -23,7 +23,9 @@ if (empty($dataTransaksi) || !is_array($dataTransaksi) || !isset($dataTransaksi[
 }
 // Ambil id_user dan id_pelangan dari data transaksi
 $idUser  = $dataTransaksi[0]['id_user'];
-$idPelanggan = $dataTransaksi[0]['id_pelangan']; 
+$idPelanggan = $dataTransaksi[0]['id_pelangan'];
+$totalBayar = $dataTransaksi[0]['total_bayar'];
+$kembali = $dataTransaksi[0]['kembalian'];
 
 $pelanggan = queryReadData("SELECT nama_pelangan FROM tbl_pelangan WHERE id_pelangan = '$idPelanggan'");
 $namaPelanggan = "Umum";
@@ -34,20 +36,10 @@ if (!empty($pelanggan) && is_array($pelanggan) && isset($pelanggan[0]['nama_pela
 $barang = queryReadData("SELECT * FROM tbl_barang WHERE id_user='$id_user'");
 
 
-if(isset($_POST["tambah"]) ) {
-  
-  if(tambahDetailTransaksi($_POST) > 0) {
-    header('location: detail_transaksi.php?id_transaksi='.$kodeTransaksi);
-  }else {
-    echo "<script>
-    alert('Data gagal ditambahkan!');
-    </script>";
-  }
-}
-
 $Detail = mysqli_query($connection,"SELECT * FROM tbl_detail_transaksi WHERE kode_transaksi = '$kodeTransaksi'");
 $totalBelanjaan = 0; 
 $h1 = mysqli_num_rows($Detail);//jumlah pelangan
+
 ?>
 <!DOCTYPE html>
 
@@ -477,69 +469,6 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
                         </div>
                         </div>
                        
-                        <div class="row mb-1">
-                          <div class="col-sm-10">
-                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahTransaksi<?=$kodeTransaksi;?>">Tambah Barang</button>
-
-                          <!-- tambah Modal -->
-<div class="modal fade" id="tambahTransaksi<?=$kodeTransaksi;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Tambah Barang</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <div class="modal-body">
-                                      <form method="POST">
-                                        <input type="hidden" name="waktu" id="" value="<?php
-                                            echo date('d-m-Y H:i:s'); // Format: DD-BB-TTTT HH:MM:SS
-                                        ?>">
-                                        <input type="hidden" name="iduse" id="" value="<?=$id_user;?>">
-                                        <input type="hidden" name="idpel" id="" value="<?=$idPelanggan;?>">
-                                        <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Barang</label>
-                                          <div class="col-sm-10">
-                                          <select id="timeZones" class="select2 form-select"  name="namabarang" onchange="fetchPrice(this.value)">
-                                            <option selected>Choose</option>
-                                            <?php foreach ($barang as $item) :?>
-                                            <option> <?= $item["nama_barang"]; ?></option>
-                                            <?php endforeach; ?>
-                                            </select>                                          
-                                          </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-alamat" >Harga</label>
-                                          <div class="col-sm-10">
-                                            <input
-                                              type="text"
-                                              name="harga"
-                                              class="form-control"
-                                              id="harga"
-                                              readonly
-                                            />
-                                          </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Qty</label>
-                                          <div class="col-sm-10">
-                                          <input type="number" class="form-control" id="basic-default-name" placeholder="" name="qty" require/>
-                                          </div>
-                                        </div>
-                                        <div class="col-sm-10">
-                                        <input type="hidden" name="idtransaksi" value="<?=$kodeTransaksi;?>">
-                                          <button type="submit" class="btn btn-primary" name="tambah">Tambah</button>
-                                        </div>
-                                        </form>
-                                      </div>
-                                      <div class="modal-footer">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                <!-- /tambah-->
-                          </div>
-                        </div>
                </div>
                 <div class="card-body">
                   <div class="table-responsive text-nowrap">
@@ -551,94 +480,25 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
                               <th>Harga</th>
                               <th>Qty</th>
                               <th>Total</th>
-                              <th>Action</th>
                             </tr>
                       </thead>
                           <tbody>
                           <?php
                            $i = 1; // penomoran
                            while ($detailTransaksi = mysqli_fetch_array($Detail)) {
-                              $idDetail = $detailTransaksi['id_detail'];
-                              $idTransaksi = $detailTransaksi['kode_transaksi'];
                                $nama_brg = $detailTransaksi['nama_barang'];
                                $harga = $detailTransaksi['harga'];
                                $qty = $detailTransaksi['qty'];
                                $total = $harga * $qty;
-                               $totalBelanjaan += $total;                          
-                               ?>
+                               $totalBelanjaan += $total;                          ?>
 
                             <tr>
                                 <td><?=$i++;?></td>
                                 <td><?=$nama_brg;?></td>
                                 <td><?=$harga;?></td>
                                 <td><?=$qty;?></td> 
-                                <td><?=$total;?></td>                                                              
-                                <td>
-                                <div class="action text-center">
-                                  <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editTransaksi<?=$idDetail;?>">Edit</button>
-  
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletTransaksi<?=$idDetail;?>">Delete</button>
-                                  </div>
-                                </td>
-                                <!--Delete Modal-->
- <div class="modal fade" id="deletTransaksi<?=$idDetail;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Hapus Data Penjualan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="post">
-                <div class="modal-body mb-3">
-                    <h5>Apakah Anda Yakin, ingin menghapus <?=$nama_brg;?></h5>
-                    <input type="hidden" name="id_detail" value="<?=$idDetail;?>">
-                    <button type="submit" class="btn btn-danger" name="hapus_penjualan">Hapus</button>
-                </div>
-            </form>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div>                                
+                                <td><?=$total;?></td>                                                             
                             </tr> 
-
-                            <!-- Edit Modal -->
-<div class="modal fade" id="editTransaksi<?=$idDetail;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit Jumlah Penjualan</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <div class="modal-body">
-                                      <form method="POST">
-                                        <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Barang</label>
-                                          <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="basic-default-name" name="namaPelangan" value="<?=$nama_brg;?>" readonly/>
-                                          </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                          <label class="col-sm-2 col-form-label" for="basic-default-name">Qty</label>
-                                          <div class="col-sm-10">
-                                            <input type="number" class="form-control" id="basic-default-name" name="qtybaru" value="<?=$qty;?>" required/>
-                                          </div>
-                                        </div>
-                                        <div class="col-sm-10">
-                                        <input type="hidden" name="kodetransaksi" value="<?=$kodeTransaksi;?>">
-                                        <input type="hidden" name="idDetail" value="<?=$idDetail;?>">
-                                          <button type="submit" class="btn btn-primary" name="update_pembelian">Update</button>
-                                        </div>
-                                        </form>
-                                      </div>
-                                      <div class="modal-footer">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                <!-- /Edit Modal-->
                             
                             <?php
                             };//end of while                              
@@ -660,22 +520,16 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
                 <div class="row">
                           <label class="col-sm-8 col-form-label text-end" for="basic-default-name">Total Bayar</label>
                           <div class="col-sm-4">
-                            <input type="text" name="bayar" id="bayar" oninput="calculateChange()"/>
+                            <input type="text" name="bayar" id="bayar" value="<?=$totalBayar?>" oninput="calculateChange()"/>
                           </div>
                 </div>
                 <div class="row">
                           <label class="col-sm-8 col-form-label text-end" for="basic-default-name">Kembalian</label>
                           <div class="col-sm-4">
-                            <input type="text" name="kembalian" id="kembalian" readonly/>
+                            <input type="text" name="kembalian" id="kembalian" value="<?=$kembali?>" readonly/>
                           </div>
                 </div>
-                <div class="row">
-                          <label class="col-sm-8 col-form-label text-end" for="basic-default-name"></label>
-                          <div class="col-sm-4">
-                          <button type="submit" class="btn btn-danger" name="transaksi">Bayar</button>                          </div>
-
-                          <!--bayar Modal-->
-                </div>
+                
 
 
 
@@ -710,6 +564,9 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
         </div>
         <!-- / Layout page -->
       </div>
+
+    
+
 
 
       <!-- Overlay -->
@@ -759,18 +616,17 @@ function fetchPrice(nama_barang) {
     }
 }
 
-function calculateChange() {
-        var total = parseFloat($('#total').val()) || 0;
-        var bayar = parseFloat($('#bayar').val()) || 0;
-        var kembalian = bayar - total;
-        $('#kembalian').val(kembalian >= 0 ? kembalian : 0); // Tampilkan kembalian, tidak boleh negatif
-    }
+
 </script>
 
     <script>
     $(document).ready(function(){
         $('#tabel-data-transaksi').DataTable();
     });
+    </script>
+
+    <script>
+        window.print();
     </script>
   </body>
 </html>

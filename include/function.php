@@ -182,19 +182,35 @@ if(isset($_POST['transaksi'])){
   $total = $_POST['total'];
   $bayar = $_POST['bayar'];
   $tanggal = $_POST['tu'];
-  
-  $updateTransaksi = mysqli_query($connection,"UPDATE tbl_transaksi SET total='$total', total_bayar='$bayar', tanggal='$tanggal' WHERE kode_transaksi='$transaksi'");
+  $kembali = $_POST['kembalian'];
+
+  $updateTransaksi = mysqli_query($connection,"UPDATE tbl_transaksi SET total='$total', total_bayar='$bayar', kembalian='$kembali', tanggal='$tanggal' WHERE kode_transaksi='$transaksi'");
 
   if($updateTransaksi){
-    $_SESSION['transaksi_berhasil'] = true;
-    } else {
+    header('location: transaksiBerhasil.php?id_transaksi='.$transaksi);
+     } else {
       echo"<script>
       alert('transaksi gagal');
       </script>";
     }
 }
 
+//update data detail transaksi
+if(isset($_POST['update_pembelian'])){
+  $iddetail = $_POST['idDetail'];
+  $qty = $_POST['qtybaru'];
+  $kodeTransaksi = $_Post['kodetransaksi'];
+  
+  $updateDetail = mysqli_query($connection,"UPDATE tbl_detail_transaksi SET qty='$qty' WHERE id_detail='$iddetail'");
 
+}
 
+//hapus penjualan
+if(isset($_POST['hapus_penjualan'])){
+  $iddetail = $_POST['id_detail'];
+
+  $hapuspenjualan = mysqli_query($connection,"DELETE FROM tbl_detail_transaksi WHERE id_detail='$iddetail'");
+ 
+} 
 
 ?>
