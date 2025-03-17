@@ -167,9 +167,10 @@ function tambahDetailTransaksi($dataDetailBarang) {
   $qty = htmlspecialchars($dataDetailBarang["qty"]);  
   $tanggal = htmlspecialchars($dataDetailBarang["waktu"]);
   $pelangan = htmlspecialchars($dataDetailBarang["idpel"]);  
-  $harga = htmlspecialchars($dataDetailBarang["harga"]);   
+  $harga = htmlspecialchars($dataDetailBarang["harga"]); 
+  $id_barang = htmlspecialchars($dataDetailBarang["id_barang"]);     
   
-  $queryInsertDataDetail = "INSERT INTO tbl_detail_transaksi VALUES('', '$kodeTransaksi', '$id_user', '$pelangan', '$namabarang', '$qty', '$harga', '$tanggal')";
+  $queryInsertDataDetail = "INSERT INTO tbl_detail_transaksi VALUES('', '$kodeTransaksi', '$id_user', '$pelangan', '$id_barang', '$namabarang', '$qty', '$harga', '$tanggal')";
   
   mysqli_query($connection, $queryInsertDataDetail);
   return mysqli_affected_rows($connection);
@@ -199,7 +200,7 @@ if(isset($_POST['transaksi'])){
 if(isset($_POST['update_pembelian'])){
   $iddetail = $_POST['idDetail'];
   $qty = $_POST['qtybaru'];
-  $kodeTransaksi = $_Post['kodetransaksi'];
+  $kodeTransaksi = $_POST['kodetransaksi'];
   
   $updateDetail = mysqli_query($connection,"UPDATE tbl_detail_transaksi SET qty='$qty' WHERE id_detail='$iddetail'");
 
@@ -213,4 +214,21 @@ if(isset($_POST['hapus_penjualan'])){
  
 } 
 
+//update data laoran transaksi
+if(isset($_POST['update_laporan'])){
+  $kode = $_POST['kodetransaksi'];
+  $id_pelangan = $_POST['kodepelangan'];
+  $jumlah = $_POST['jumlah'];
+  
+  $updateLaoran = mysqli_query($connection,"UPDATE tbl_transaksi SET id_pelangan='$id_pelangan', total='$jumlah' WHERE kode_transaksi='$kode'");
+
+}
+
+//hapus penjualan
+if(isset($_POST['hapus_transaksi'])){
+  $kdo = $_POST['trans'];
+
+  $hapustransaki = mysqli_query($connection,"DELETE FROM tbl_transaksi WHERE kode_transaksi='$kdo'");
+ 
+} 
 ?>
