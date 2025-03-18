@@ -1,3 +1,38 @@
+<?php
+require "../include/function.php";
+
+$kategori = queryReadData("SELECT * FROM tbl_katagori");
+
+$query = "SELECT id_provinsi, provinsi FROM tbl_provinsi"; // Ganti dengan nama tabel dan kolom yang sesuai
+$result = mysqli_query($connection, $query);
+
+$provinsi = [];
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $provinsi[] = $row; // Simpan hasil ke dalam array
+    }
+}
+
+require "../include/config.php";
+
+if(isset($_POST["sigUp"]) ) {
+  
+  if(signUp($_POST) > 0) {
+    echo "<script>
+    alert('Sign Up berhasil!')
+    </script>";
+    header('location: login.php');
+  }else {
+    echo "<script>
+    alert('Sign Up gagal!')
+    </script>";
+  }
+  
+}
+
+
+?>
+
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -68,77 +103,100 @@
     <!-- Content -->
 
     <div class="container-xxl">
-        <div class="col-xxl">
-          <div class="card mb-4">
-           <!-- Logo -->
-           <div class="logo">
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+          <div class="card">
+          <div class="logo mt-3">
             <img src="../assets/img/icons/brands/logo.jpg" alt="" srcset="" width="250px">
            </div>
-         
-          
-          <!-- /Logo -->
 
-            <div class="card-body">
-              <form>
+           <div class="card-body">
+              <form method="post">
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label" for="basic-default-name">Username</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="basic-default-name" />
+                    <input type="text" class="form-control" id="basic-default-name" name="username"required/>
                   </div>
                 </div>
-                <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-company">Password</label>
-                  <div class="col-sm-10">
+                <div class="mb-3 row">
+                        <label for="html5-password-input" class="col-md-2 col-form-label">Password</label>
+                        <div class="col-md-10">
+                        <div class="input-group input-group-merge">
                     <input
-                      type="text"
+                      type="password"
+                      id="password"
                       class="form-control"
-                      id="basic-default-company"
+                      name="password"
+                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                      aria-describedby="password"
+                      required
                     />
+                    <span class="input-group-text cursor-pointer" id="togglePassword"><i class="bx bx-hide"></i></span>
                   </div>
+                        </div>
                 </div>
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label" for="basic-default-name">nama usaha</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="basic-default-name" />
+                    <input type="text" class="form-control" id="basic-default-name" name="namusaha" required/>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-usaha">kategori usaha</label>
+                  <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Pemilik Usaha </label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="basic-default-usaha" />
+                    <input type="text" class="form-control" id="basic-default-name" name="nama"required/>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                <label for="timeZones" class="col-sm-2 col-form-label">Katagori Usaha</label>
+                  <div class="col-sm-10">
+                  <select id="timeZones" class="select2 form-select"  name="kusaha">
+                            <option selected>Choose</option>
+                              <?php foreach ($kategori as $item) : ?>
+                              <option><?= $item["nama_katagori"]; ?></option>
+                              <?php endforeach; ?>
+                  </select>
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label" for="basic-default-phone">no telepon</label>
                   <div class="col-sm-10">
                     <input
-                      type="text"
+                    name="telepon"
+                      type="tel"
                       id="basic-default-phone"
                       class="form-control phone-mask"
                       aria-describedby="basic-default-phone"
-                    />
+                    required/>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-provinsi">provinsi</label>
+                <label for="timeZones" class="col-sm-2 col-form-label">Provinsi</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="basic-default-provinsi" />
+                  <select id="timeZones" class="select2 form-select"  name="provinsi">
+                            <option selected>Choose</option>
+                            <?php foreach ($provinsi as $item) : ?>
+                <option ><?= $item['provinsi']; ?></option>
+            <?php endforeach; ?>
+                  </select>
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label" for="basic-default-alamat">alamat</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="basic-default-alamat" />
+                    <input type="text" class="form-control" id="basic-default-alamat" name="alamat" required/>
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label" for="basic-default-kode">kode pos</label>
                   <div class="col-sm-10">
                     <input
+                    name="kodepos"
                       type="text"
                       id="basic-default-kode"
                       class="form-control kode-maks"
                       aria-describedby="basic-default-kode"
+                      required
                     />
                   </div>
                 </div>
@@ -147,11 +205,13 @@
                   <div class="col-sm-10">
                     <div class="input-group input-group-merge">
                       <input
-                        type="text"
+                      name="email"
+                        type="email"
                         id="basic-default-email"
                         class="form-control"
                         aria-label="john.doe"
                         aria-describedby="basic-default-email2"
+                        required
                       />
                       <span class="input-group-text" id="basic-default-email2">@gmail.com</span>
                     </div>
@@ -161,6 +221,7 @@
                   <label class="col-sm-2 col-form-label" for="basic-default-nota">pesan nota</label>
                   <div class="col-sm-10">
                     <textarea
+                    name="pesan"
                       id="basic-default-nota"
                       class="form-control"
                       aria-describedby="basic-icon-default-nota"
@@ -169,18 +230,23 @@
                 </div>
                 <div class="row justify-content-end">
                   <div class="col-sm-10">
-                    <button type="submit" class="btn btn-primary">Send</button>
+                    <button type="submit" class="btn btn-primary" name="sigUp">Send</button>
                   </div>
                 </div>
               </form><br>
               <p class="text-center">
                 <span>Already have an account?</span>
-                <a href="auth-login-basic.html">
+                <a href="login.php">
                   <span>Sign in instead</span>
                 </a>
               </p>
 
             </div>
+
+          </div>
+          
+
+           
           </div>
         </div>
     </div>
@@ -201,6 +267,20 @@
     <script src="../assets/js/main.js"></script>
 
     <!-- Page JS -->
+    <script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function () {
+        // Toggle the type attribute
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Toggle the eye / eye slash icon
+        this.querySelector('i').classList.toggle('bx-hide');
+        this.querySelector('i').classList.toggle('bx-show');
+    });
+</script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
