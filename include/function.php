@@ -116,7 +116,7 @@ function updateAkun($account) {
   global $connection;
 
   // Ambil account dari array $account
-  $id_user = $account['iduser'];
+  $id_user = $account['id_user'];
   $nama = $account['nama'];
   $nama_usaha = $account['nama_usaha'];
   $katagori_usaha = $account['kusaha'];
@@ -135,7 +135,10 @@ function updateAkun($account) {
 
   // Eksekusi query
   if ($stmt->execute()) {
-      return 1; // Mengembalikan 1 jika berhasil
+    echo"<script>
+    alert('data telah diperbaharui');
+    </script>";
+      //return 1; // Mengembalikan 1 jika berhasil
   } else {
       return 0; // Mengembalikan 0 jika gagal
   }
