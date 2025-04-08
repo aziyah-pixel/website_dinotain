@@ -185,7 +185,7 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
               </a>
             </li>
             <li class="menu-item">
-              <a href="../Sign/login.php" class="menu-link">
+              <a href="../Sign/logout.php" class="menu-link">
               <i class='menu-icon tf-icons bx bx-lock-open-alt'></i>
                 <div data-i18n="Analytics">Log Out</div>
               </a>
@@ -274,6 +274,7 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                                 
                             <!-- /tambah Modal-->
                 </div>
+                
                   <div class="card-body">
                     <div class="table-responsive text-nowrap">
                     <table id="tabel-data-pelangan" class="table table-striped table-bordered" width="100%" cellspacing="0">
@@ -312,31 +313,31 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                                   </div>
                               </td>
 
- <!--Delete Modal-->
- <div class="modal fade" id="deletepelangan<?=$idpelangan;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Hapus Data Pelangan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="post">
-                <div class="modal-body mb-3">
-                    <h5>Apakah Anda Yakin, ingin menghapus <?=$namaPelangan;?></h5>
-                    <input type="hidden" name="idPelangan" value="<?=$idpelangan;?>">
-                    <button type="submit" class="btn btn-danger" name="hapus_pelangan">Hapus</button>
-                </div>
-            </form>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div>
+                              <!--Delete Modal-->
+                              <div class="modal fade" id="deletepelangan<?=$idpelangan;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLabel">Hapus Data Pelangan</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+                                          <form method="post">
+                                              <div class="modal-body mb-3">
+                                                  <h5>Apakah Anda Yakin, ingin menghapus <?=$namaPelangan;?></h5>
+                                                  <input type="hidden" name="idPelangan" value="<?=$idpelangan;?>">
+                                                  <button type="submit" class="btn btn-danger" name="hapus_pelangan">Hapus</button>
+                                              </div>
+                                          </form>
+                                          <div class="modal-footer">
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
 
                           </tr>  
 
-<!-- Edit Modal -->
-<div class="modal fade" id="editpelangan<?=$idpelangan;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <!-- Edit Modal -->
+                                <div class="modal fade" id="editpelangan<?=$idpelangan;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                   <div class="modal-dialog">
                                     <div class="modal-content">
                                       <div class="modal-header">

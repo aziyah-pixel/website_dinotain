@@ -199,7 +199,7 @@ if(isset($_POST["dataTransaksi"]) ) {
               </a>
             </li>
             <li class="menu-item">
-              <a href="../Sign/login.php" class="menu-link">
+              <a href="../Sign/logout.php" class="menu-link">
               <i class='menu-icon tf-icons bx bx-lock-open-alt'></i>
                 <div data-i18n="Analytics">Log Out</div>
               </a>

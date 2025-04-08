@@ -182,7 +182,7 @@ $h1 = mysqli_num_rows($penjualan);//jumlah pelangan
               </a>
             </li>
             <li class="menu-item">
-              <a href="setingAkun.php" class="menu-link">
+              <a href="../Sign/logout.php" class="menu-link">
               <i class='menu-icon tf-icons bx bx-lock-open-alt'></i>
                 <div data-i18n="Analytics">Log Out</div>
               </a>
@@ -241,6 +241,7 @@ $h1 = mysqli_num_rows($penjualan);//jumlah pelangan
                                $kodeTransaksi = $dataPenjualan['kode_transaksi'];
                                $idpelangan = $dataPenjualan['id_pelangan'];
                                $jumlah = $dataPenjualan['total'];
+                              
                             
                           ?>
                           <tr>
@@ -327,12 +328,14 @@ $h1 = mysqli_num_rows($penjualan);//jumlah pelangan
 
                       </tbody>
                     </table>  
+                
                     </div>
-                  </div>
+                    
                 </div>
                 <!-- / Tabel Pelangan -->
                 
-
+                </div>
+                </div>
                
               </div>
             </div>

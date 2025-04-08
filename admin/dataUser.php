@@ -154,7 +154,7 @@ $user = mysqli_query($connection,"SELECT id_user, full_nama, nama_usaha, email, 
               <span class="menu-header-text">Pages</span>
             </li>
             <li class="menu-item">
-            <a href="../Sign/login.php" class="menu-link" target="">
+            <a href="../Sign/logout.php" class="menu-link" target="">
               <i class='menu-icon tf-icons bx bx-log-out-circle' ></i>
                 <div data-i18n="Analytics">Log Out</div>
               </a>
