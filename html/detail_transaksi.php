@@ -15,7 +15,7 @@ while($datauser=mysqli_fetch_array($data)){
 };
 
 $kodeTransaksi = $_GET["id_transaksi"];
-var_dump($kodeTransaksi);
+//var_dump($kodeTransaksi);
 $dataTransaksi = queryReadData("SELECT * FROM tbl_transaksi WHERE kode_transaksi='$kodeTransaksi'");
 
 if (empty($dataTransaksi) || !is_array($dataTransaksi) || !isset($dataTransaksi[0])) {
@@ -150,6 +150,14 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
               </a>
             </li>
 
+              <!-- Berita -->
+              <li class="menu-item">
+              <a href="berita.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-notepad'></i>
+                <div data-i18n="Analytics">Berita</div>
+              </a>
+            </li>
+
              <!-- Transaksi -->
              <li class="menu-item active">
               <a href="transaksi.php" class="menu-link">
@@ -233,7 +241,7 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
                <div class="card-body">
                 
                     <div class="row mb-3">
-                    <label for="" class="text-end"><?php
+                    <label for="" class="text-end" id="current-time"><?php
                             echo date('d-m-Y H:i:s'); // Format: DD-BB-TTTT HH:MM:SS
                         ?></label>
                     </div>
@@ -573,6 +581,21 @@ function calculateChange() {
         var kembalian = bayar - total;
         $('#kembalian').val(kembalian >= 0 ? kembalian : 0); // Tampilkan kembalian, tidak boleh negatif
     }
+
+    function updateTime() {
+        const now = new Date();
+        const formattedTime = now.toLocaleString('id-ID', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: false 
+        });
+        document.getElementById('current-time').innerText = formattedTime;
+    }
+    setInterval(updateTime, 1000); // Update every second
 </script>
 
     <script>

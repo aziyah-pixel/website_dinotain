@@ -46,12 +46,12 @@ if(isset($_POST["cari_artikel"]) ) {
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Dashboard dinotain</title>
+    <title>dinotain</title>
 
     <meta name="description" content="" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
+    <!-- Favicon 
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />-->
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -117,10 +117,18 @@ if(isset($_POST["cari_artikel"]) ) {
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item active">
+            <li class="menu-item ">
               <a href="index.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
+              </a>
+            </li>
+
+             <!-- Berita -->
+             <li class="menu-item active">
+              <a href="berita.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-notepad'></i>
+                <div data-i18n="Analytics">Berita</div>
               </a>
             </li>
 

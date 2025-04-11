@@ -16,7 +16,7 @@ while($datauser=mysqli_fetch_array($data)){
 
 var_dump($nama); 
 
-$pelangan = queryReadData("SELECT * FROM tbl_pelangan");
+$pelangan = queryReadData("SELECT * FROM tbl_pelangan WHERE id_user ='$id_user'");
 
 // Mengambil kode transaksi terakhir
 $sql = "SELECT kode_transaksi FROM tbl_transaksi ORDER BY kode_transaksi DESC LIMIT 1";
@@ -74,7 +74,7 @@ if(isset($_POST["dataTransaksi"]) ) {
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Dashboard dinotain</title>
+    <title>dinotain</title>
 
     <meta name="description" content="" />
 
@@ -142,6 +142,14 @@ if(isset($_POST["dataTransaksi"]) ) {
               </a>
             </li>
 
+              <!-- Berita -->
+              <li class="menu-item">
+              <a href="berita.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-notepad'></i>
+                <div data-i18n="Analytics">Berita</div>
+              </a>
+            </li>
+            
              <!-- Transaksi -->
              <li class="menu-item active">
               <a href="transaksi.php" class="menu-link">
@@ -223,7 +231,7 @@ if(isset($_POST["dataTransaksi"]) ) {
                   <div class="card mb-4">
                     <div class="card-header d-flex align-items-center justify-content-between">
                       <h5 class="mb-0">TRANSAKSI PENJUALAN</h5>
-                      <label for=""><?php
+                      <label for="" id="current-time"><?php
                             echo date('d-m-Y H:i:s'); // Format: DD-BB-TTTT HH:MM:SS
                         ?></label>
                     </div>
@@ -352,6 +360,21 @@ if(isset($_POST["dataTransaksi"]) ) {
             additionalForm.hidden = true; // Sembunyikan form tambahan jika "Umum" dipilih
         }
     });
+
+    function updateTime() {
+        const now = new Date();
+        const formattedTime = now.toLocaleString('id-ID', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: false 
+        });
+        document.getElementById('current-time').innerText = formattedTime;
+    }
+    setInterval(updateTime, 1000); // Update every second
     </script>
 
    

@@ -128,6 +128,14 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
               </a>
             </li>
 
+              <!-- Berita -->
+              <li class="menu-item">
+              <a href="berita.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-notepad'></i>
+                <div data-i18n="Analytics">Berita</div>
+              </a>
+            </li>
+
              <!-- Transaksi -->
              <li class="menu-item">
               <a href="transaksi.php" class="menu-link">
@@ -392,9 +400,9 @@ $h1 = mysqli_num_rows($pelangan);//jumlah pelangan
                       </tbody>
                     </table>  
                     </div>
-                    <div class="col-sm-10 mt-3">
+                    <!--<div class="col-sm-10 mt-3">
                       <a href="..//export/exportPelangan.php" target="_blank" rel="noopener noreferrer"><button type="submit" class="btn btn-primary">Cetak</button></a>
-                    </div>
+                    </div>-->
                   </div>
                 </div>
                 <!-- / Tabel Pelangan -->

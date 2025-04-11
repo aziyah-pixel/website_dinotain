@@ -142,6 +142,14 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
               </a>
             </li>
 
+              <!-- Berita -->
+              <li class="menu-item">
+              <a href="berita.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-notepad'></i>
+                <div data-i18n="Analytics">Berita</div>
+              </a>
+            </li>
+
              <!-- Transaksi -->
              <li class="menu-item active">
               <a href="transaksi.php" class="menu-link">
@@ -224,7 +232,7 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
                <div class="card-body">
                 
                     <div class="row mb-3">
-                    <label for="" class="text-end"><?php
+                    <label for="" class="text-end" id="current-time"><?php
                             echo date('d-m-Y H:i:s'); // Format: DD-BB-TTTT HH:MM:SS
                         ?></label>
                     </div>

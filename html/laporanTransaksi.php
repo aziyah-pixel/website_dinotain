@@ -125,6 +125,14 @@ $h1 = mysqli_num_rows($penjualan);//jumlah pelangan
               </a>
             </li>
 
+              <!-- Berita -->
+              <li class="menu-item">
+              <a href="berita.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-notepad'></i>
+                <div data-i18n="Analytics">Berita</div>
+              </a>
+            </li>
+            
              <!-- Transaksi -->
              <li class="menu-item">
               <a href="transaksi.php" class="menu-link">
@@ -395,6 +403,21 @@ $h1 = mysqli_num_rows($penjualan);//jumlah pelangan
     $(document).ready(function(){
         $('#tabel-data-penjualan').DataTable();
     });
+
+    function updateTime() {
+        const now = new Date();
+        const formattedTime = now.toLocaleString('id-ID', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: false 
+        });
+        document.getElementById('current-time').innerText = formattedTime;
+    }
+    setInterval(updateTime, 1000); // Update every second
 </script>
   </body>
 </html>

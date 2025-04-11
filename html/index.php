@@ -55,6 +55,26 @@ if ($row = $result->fetch_assoc()) {
     $pemasukan_tahunan = 0; // Jika tidak ada hasil
 }
 
+
+
+/*$monthlyIncomeData = [];
+for ($month = 1; $month <= 12; $month++) {
+    $query = "SELECT SUM(total) AS total_transaksi FROM tbl_transaksi WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ?";
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param("ii", $month, $tahun);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        $monthlyIncomeData[] = $row['total_transaksi'] ? $row['total_transaksi'] : 0; // Set to 0 if no transactions
+    } else {
+        $monthlyIncomeData[] = 0; // Set to 0 if no result
+    }
+}
+
+// Convert the array to JSON format for use in JavaScript
+$monthlyIncomeDataJson = json_encode($monthlyIncomeData);*/
+
 ?>
 <!DOCTYPE html>
 
@@ -85,12 +105,12 @@ if ($row = $result->fetch_assoc()) {
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Dashboard dinotain</title>
+    <title>dinotain</title>
 
     <meta name="description" content="" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
+    <!-- Favicon 
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />-->
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -169,6 +189,14 @@ if ($row = $result->fetch_assoc()) {
               </a>
             </li>
 
+            <!-- Berita -->
+            <li class="menu-item">
+              <a href="berita.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-notepad'></i>
+                <div data-i18n="Analytics">Berita</div>
+              </a>
+            </li>
+
              <!-- Transaksi -->
              <li class="menu-item">
               <a href="transaksi.php" class="menu-link">
@@ -238,7 +266,6 @@ if ($row = $result->fetch_assoc()) {
         <!-- Layout container -->
         <div class="layout-page">
 
-
           <!-- Content wrapper -->
           <div class="content-wrapper">
             <!-- Content -->
@@ -276,8 +303,8 @@ if ($row = $result->fetch_assoc()) {
                   <div class="row">
                     <div class="col-lg-6 col-md-12 col-6 mb-4">
                       <?php
-                      $pemasukan = "SELECT SUM(total) AS total_transaksi FROM tbl_transaksi WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? AND id_user = ?";
-                      $stmt = $connection->prepare($pemasukan);
+                      $pemasukanbln = "SELECT SUM(total) AS total_transaksi FROM tbl_transaksi WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? AND id_user = ?";
+                      $stmt = $connection->prepare($pemasukanbln);
                       $stmt->bind_param("iii", $bulan, $tahun, $id_user);
                       $stmt->execute();
                       $result = $stmt->get_result();
@@ -288,6 +315,7 @@ if ($row = $result->fetch_assoc()) {
                       } else {
                           $total_pemasukan = 0; // Jika tidak ada hasil
                       }
+                     
                       ?>
                       <div class="card">
                         <div class="card-body">
@@ -397,6 +425,7 @@ if ($row = $result->fetch_assoc()) {
                                 <div id="incomeChart"></div>
                                 <div class="d-flex justify-content-center pt-4 gap-2">
                                   <div class="flex-shrink-0">
+                                  
                                     <div id="expensesOfWeek"></div>
                                   </div>
                                   <div>
@@ -413,7 +442,7 @@ if ($row = $result->fetch_assoc()) {
                   </div>
                 </div>
             
-                </div>
+              </div>
              
               
               <div class="row">
@@ -450,6 +479,12 @@ if ($row = $result->fetch_assoc()) {
                         <div id="orderStatisticsChart"></div>
                       </div>
                       <div id="vertical-example">
+                      <script>
+                          const orderData = {
+                            labels: [],
+                            series: []
+                          };
+                        </script>
                         <ul class="p-0 m-0 scrollable-list">
                           <?php
                           $dataBarang = "
@@ -466,9 +501,6 @@ if ($row = $result->fetch_assoc()) {
                           $stmt->bind_param("iii", $bulan, $tahun, $id_user);
                           $stmt->execute();
                           $result = $stmt->get_result();
-
-                          $labels = [];
-                          $series = [];
                           
                           // Cek apakah ada hasil
                           if ($result->num_rows > 0) {
@@ -476,12 +508,13 @@ if ($row = $result->fetch_assoc()) {
                           while ($row = $result->fetch_assoc()) {
                             $nama_barang = htmlspecialchars($row['nama_barang']); 
                             $total_barang = htmlspecialchars($row['total_qty']); 
-
-                            //data u grafik
-                            $labels[] = $nama_barang;
-                            $seris[] = (int)$total_barang;
                           
                           ?>
+
+<script>
+        orderData.labels.push("<?= $nama_barang; ?>");
+        orderData.series.push(<?= $total_barang; ?>);
+      </script>
                                       
                           <li class="d-flex mb-4 pb-1">
                             <div class="avatar flex-shrink-0 me-3">
@@ -568,6 +601,8 @@ if ($row = $result->fetch_assoc()) {
                 </div>
                 <!--/ Transactions -->
               </div>
+
+              
             </div>
             <!-- / Content -->
 
@@ -618,11 +653,6 @@ if ($row = $result->fetch_assoc()) {
     <!-- Page JS -->
     <script src="../assets/js/dashboards-analytics.js"></script>
 
-    <script>
-    // Siapkan data untuk grafik
-    const labels = <?php echo json_encode($labels); ?>;
-    const series = <?php echo json_encode($series); ?>;
-    </script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

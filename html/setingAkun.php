@@ -152,6 +152,14 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
               </a>
             </li>
 
+              <!-- Berita -->
+              <li class="menu-item">
+              <a href="berita.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-notepad'></i>
+                <div data-i18n="Analytics">Berita</div>
+              </a>
+            </li>
+            
              <!-- Transaksi -->
              <li class="menu-item">
               <a href="transaksi.php" class="menu-link">

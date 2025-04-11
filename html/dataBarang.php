@@ -122,6 +122,14 @@ if(isset($_POST["tambahBarang"]) ) {
               </a>
             </li>
 
+              <!-- Berita -->
+              <li class="menu-item">
+              <a href="berita.php" class="menu-link">
+              <i class='menu-icon tf-icons bx bx-notepad'></i>
+                <div data-i18n="Analytics">Berita</div>
+              </a>
+            </li>
+
              <!-- Transaksi -->
              <li class="menu-item">
               <a href="transaksi.php" class="menu-link">
