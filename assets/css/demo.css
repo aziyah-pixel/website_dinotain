@@ -9,7 +9,7 @@
 }
 
 .app-brand-logo.demo img {
-  width: 150px;
+  width: 100%;
   height: 50px;
 }
 
@@ -122,4 +122,8 @@
 .logo{
   text-align: center;
   margin: auto;
+}
+
+.regis{
+  width: 50%;
 }

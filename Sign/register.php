@@ -102,7 +102,7 @@ if(isset($_POST["sigUp"]) ) {
   <body>
     <!-- Content -->
 
-    <div class="container-xxl">
+    <div class="container regis">
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
           <div class="card">
@@ -113,14 +113,14 @@ if(isset($_POST["sigUp"]) ) {
            <div class="card-body">
               <form method="post">
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-name">Username</label>
-                  <div class="col-sm-10">
+                  <label class="col-sm-3 col-form-label" for="basic-default-name">Username</label>
+                  <div class="col-sm-9">
                     <input type="text" class="form-control" id="basic-default-name" name="username"required/>
                   </div>
                 </div>
                 <div class="mb-3 row">
-                        <label for="html5-password-input" class="col-md-2 col-form-label">Password</label>
-                        <div class="col-md-10">
+                        <label for="html5-password-input" class="col-md-3 col-form-label">Password</label>
+                        <div class="col-md-9">
                         <div class="input-group input-group-merge">
                     <input
                       type="password"
@@ -136,20 +136,20 @@ if(isset($_POST["sigUp"]) ) {
                         </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-name">nama usaha</label>
-                  <div class="col-sm-10">
+                  <label class="col-sm-3 col-form-label" for="basic-default-name">nama usaha</label>
+                  <div class="col-sm-9">
                     <input type="text" class="form-control" id="basic-default-name" name="namusaha" required/>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Pemilik Usaha </label>
-                  <div class="col-sm-10">
+                  <label class="col-sm-3 col-form-label" for="basic-default-name">Nama Pemilik Usaha </label>
+                  <div class="col-sm-9">
                     <input type="text" class="form-control" id="basic-default-name" name="nama"required/>
                   </div>
                 </div>
                 <div class="row mb-3">
-                <label for="timeZones" class="col-sm-2 col-form-label">Katagori Usaha</label>
-                  <div class="col-sm-10">
+                <label for="timeZones" class="col-sm-3 col-form-label">Katagori Usaha</label>
+                  <div class="col-sm-9">
                   <select id="timeZones" class="select2 form-select"  name="kusaha">
                             <option selected>Choose</option>
                               <?php foreach ($kategori as $item) : ?>
@@ -159,8 +159,8 @@ if(isset($_POST["sigUp"]) ) {
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-phone">no telepon</label>
-                  <div class="col-sm-10">
+                  <label class="col-sm-3 col-form-label" for="basic-default-phone">no telepon</label>
+                  <div class="col-sm-9">
                     <input
                     name="telepon"
                       type="tel"
@@ -171,8 +171,8 @@ if(isset($_POST["sigUp"]) ) {
                   </div>
                 </div>
                 <div class="row mb-3">
-                <label for="timeZones" class="col-sm-2 col-form-label">Provinsi</label>
-                  <div class="col-sm-10">
+                <label for="timeZones" class="col-sm-3 col-form-label">Provinsi</label>
+                  <div class="col-sm-9">
                   <select id="timeZones" class="select2 form-select"  name="provinsi">
                             <option selected>Choose</option>
                             <?php foreach ($provinsi as $item) : ?>
@@ -182,14 +182,14 @@ if(isset($_POST["sigUp"]) ) {
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-alamat">alamat</label>
-                  <div class="col-sm-10">
+                  <label class="col-sm-3 col-form-label" for="basic-default-alamat">alamat</label>
+                  <div class="col-sm-9">
                     <input type="text" class="form-control" id="basic-default-alamat" name="alamat" required/>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-kode">kode pos</label>
-                  <div class="col-sm-10">
+                  <label class="col-sm-3 col-form-label" for="basic-default-kode">kode pos</label>
+                  <div class="col-sm-9">
                     <input
                     name="kodepos"
                       type="text"
@@ -201,8 +201,8 @@ if(isset($_POST["sigUp"]) ) {
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-email">email</label>
-                  <div class="col-sm-10">
+                  <label class="col-sm-3 col-form-label" for="basic-default-email">email</label>
+                  <div class="col-sm-9">
                     <div class="input-group input-group-merge">
                       <input
                       name="email"
@@ -213,13 +213,13 @@ if(isset($_POST["sigUp"]) ) {
                         aria-describedby="basic-default-email2"
                         required
                       />
-                      <span class="input-group-text" id="basic-default-email2">@gmail.com</span>
+                      
                     </div>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label" for="basic-default-nota">pesan nota</label>
-                  <div class="col-sm-10">
+                  <label class="col-sm-3 col-form-label" for="basic-default-nota">pesan nota</label>
+                  <div class="col-sm-9">
                     <textarea
                     name="pesan"
                       id="basic-default-nota"
@@ -229,7 +229,7 @@ if(isset($_POST["sigUp"]) ) {
                   </div>
                 </div>
                 <div class="row justify-content-end">
-                  <div class="col-sm-10">
+                  <div class="col-sm-3">
                     <button type="submit" class="btn btn-primary" name="sigUp">Send</button>
                   </div>
                 </div>
