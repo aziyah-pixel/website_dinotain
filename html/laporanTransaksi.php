@@ -308,27 +308,37 @@ while ($row = mysqli_fetch_assoc($penjualan)) {
                     <table id="tabel-data-penjualan" class="table table-striped table-bordered" width="100%" cellspacing="0">
                       <thead>
                           <tr>
-                            <th>No</th>
+                            <th>Tanggal</th>
                             <th>Kode Transaksi</th>
-                            <th>Kode Pelangan</th>
+                            <th>Nama Pelangan</th>
                             <th>Jumalah</th>
                             <th>Action</th>
                           </tr>
                       </thead>
                       <tbody>
                       <?php
-                           $i = 1; // penomoran
                            foreach ($penjualan as $item) {
                                $kodeTransaksi = $item['kode_transaksi'];
                                $idpelangan = $item['id_pelangan'];
                                $jumlah = $item['total'];
-                              
+                               $tgl = $item['tanggal'];
+
+                               // Cek apakah idpelangan bernilai 0
+                                if ($idpelangan == 0) {
+                                  $namaPelangan = "Umum";
+                              } else {
+                                  // Query untuk mendapatkan nama pelanggan
+                                  $plgnQuery = "SELECT nama_pelangan FROM tbl_pelangan WHERE id_pelangan = '$idpelangan'";
+                                  $plgnResult = mysqli_query($connection, $plgnQuery);
+                                  $plgnData = mysqli_fetch_assoc($plgnResult);
+                                  $namaPelangan = $plgnData ? $plgnData['nama_pelangan'] : "Tidak Diketahui"; 
+                               }
                             
                           ?>
                           <tr>
-                              <td><?=$i++;?></td>
+                              <td><?=$tgl?></td>
                               <td><?=$kodeTransaksi;?></td>
-                              <td><?=$idpelangan;?></td>
+                              <td><?=$namaPelangan;?></td>
                               <td><?=$jumlah;?></td>
                               <td>
                               <div class="action text-center">
