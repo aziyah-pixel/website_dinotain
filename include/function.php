@@ -7,7 +7,7 @@ $database_name = "db_dinotain";
 $connection = mysqli_connect($host, $username, $password, $database_name);
 
 // Menambahkan data barang 
-function tambahBarang($dataBarang) {
+/*function tambahBarang($dataBarang) {
   global $connection;
   
   $id_user = htmlspecialchars($dataBarang["id_user"]);
@@ -20,7 +20,80 @@ function tambahBarang($dataBarang) {
   mysqli_query($connection, $queryInsertDataBarang);
   return mysqli_affected_rows($connection);
   
-}  
+} */ 
+
+function tambahBarang($dataBarang) {
+  global $connection;
+
+  $id_user = htmlspecialchars($dataBarang["id_user"]);
+  $idbarang = htmlspecialchars($dataBarang["id_barang"]);
+  $namabarang = htmlspecialchars($dataBarang["nama_barang"]);
+  $harga = htmlspecialchars($dataBarang["harga"]);  
+  $img = uploadimg();
+ 
+  
+  if(!$img) {
+    return 0;
+  } 
+  
+  $queryInsertDataBarang = "INSERT INTO tbl_barang VALUES('$id_user', '$idbarang', '$namabarang', '$harga', '$img')";
+  
+  mysqli_query($connection, $queryInsertDataBarang);
+  return mysqli_affected_rows($connection);
+  
+}       
+
+
+
+function uploadimg() {
+  $namaFile = $_FILES["foto_produk"]["name"];
+  $ukuranFile = $_FILES["foto_produk"]["size"];
+  $error = $_FILES["foto_produk"]["error"];
+  $tmpName = $_FILES["foto_produk"]["tmp_name"];
+  
+  // cek apakah ada gambar yg diupload
+  if($error === 4) {
+    echo "<script>
+    alert('Silahkan upload foto terlebih dahulu!')
+    </script>";
+    return 0;
+  }
+  
+  // cek kesesuaian format gambar
+  $jpg = "jpg";
+  $jpeg = "jpeg";
+  $png = "png";
+  $svg = "svg";
+  $bmp = "bmp";
+  $psd = "psd";
+  $tiff = "tiff";
+  $formatGambarValid = [$jpg, $jpeg, $png, $svg, $bmp, $psd, $tiff];
+  $ekstensiGambar = explode('.', $namaFile);
+  $ekstensiGambar = strtolower(end($ekstensiGambar));
+  
+  if(!in_array($ekstensiGambar, $formatGambarValid)) {
+    echo "<script>
+    alert('Format file tidak sesuai');
+    </script>";
+    return 0;
+  }
+  
+  // batas ukuran file
+  if($ukuranFile > 2000000) {
+    echo "<script>
+    alert('Ukuran file terlalu besar!');
+    </script>";
+    return 0;
+  }
+  
+   //generate nama file baru, agar nama file tdk ada yg sama
+  $namaFileBaru = uniqid();
+  $namaFileBaru .= ".";
+  $namaFileBaru .= $ekstensiGambar;
+  
+  move_uploaded_file($tmpName, '../assets/img/produk/' . $namaFileBaru);
+  return $namaFileBaru;
+} 
 
 // Updete data Barang
 if(isset($_POST['update_barang'])){
@@ -37,8 +110,6 @@ if(isset($_POST['update_barang'])){
       </script>";
     }
 }
-
-// delete data barang
 
 
 // Menambahkan data Pelangan 
@@ -64,7 +135,7 @@ if(isset($_POST['update_pelangan'])){
   $alamat = $_POST['alamat'];
   $telepon = $_POST['telepon'];
   
-  $updatePelangan = mysqli_query($connection,"UPDATE tbl_pelangan SET nama_pelangan='$namaPelangan', alamat='$alamat', no_telep='$telepon' ");
+  $updatePelangan = mysqli_query($connection,"UPDATE tbl_pelangan SET nama_pelangan='$namaPelangan', alamat='$alamat', no_telep='$telepon' WHERE id_pelangan='$idpelangan'");
 
   if($updatePelangan){
     header('location:dataPelangan.php');
@@ -110,6 +181,16 @@ function searchartikel($keyword) {
   ";
   return queryReadData($querySearch);
 }
+
+function searchbarang($keyword) {
+  // search data barang
+  $querySearch = "SELECT * FROM tbl_barang 
+  WHERE
+  nama_barang LIKE '%$keyword%' 
+  ";
+  return queryReadData($querySearch);
+}
+
 
 //seting akun
 function updateAkun($account) {
@@ -199,6 +280,22 @@ if(isset($_POST['transaksi'])){
     }
 }
 
+//pembatalan penjualan
+if(isset($_POST['kembali'])){
+  $trans = $_POST['kodetransaksi'];
+
+  $batal = mysqli_query($connection,"DELETE FROM tbl_transaksi WHERE kode_transaksi='$trans'");
+  
+  if($batal){
+    header('location: transaksi.php');
+     } else {
+      echo"<script>
+      alert('transaksi gagal');
+      </script>";
+    }
+ 
+}
+
 //update data detail transaksi
 if(isset($_POST['update_pembelian'])){
   $iddetail = $_POST['idDetail'];
@@ -208,6 +305,7 @@ if(isset($_POST['update_pembelian'])){
   $updateDetail = mysqli_query($connection,"UPDATE tbl_detail_transaksi SET qty='$qty' WHERE id_detail='$iddetail'");
 
 }
+ 
 
 //hapus penjualan
 if(isset($_POST['hapus_penjualan'])){
@@ -234,4 +332,5 @@ if(isset($_POST['hapus_transaksi'])){
   $hapustransaki = mysqli_query($connection,"DELETE FROM tbl_transaksi WHERE kode_transaksi='$kdo'");
  
 } 
+
 ?>

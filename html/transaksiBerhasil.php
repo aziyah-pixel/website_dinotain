@@ -312,8 +312,8 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
                 </div>
                 <div class="row">
                           <label class="col-sm-8 col-form-label text-end" for="basic-default-name">Kembalian</label>
-                          <div class="col-sm-4">
-                            <input type="text" name="kembalian" id="kembalian" value="<?=$kembali?>" readonly/>
+                          <div class="col-sm-4 ">
+                            <input  type="text" name="kembalian" id="kembalian" value="<?=$kembali?>" readonly/>
                           </div>
                 </div>
                 <div class="row">

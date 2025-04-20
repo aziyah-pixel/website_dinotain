@@ -508,7 +508,7 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
                     </table>  
                   </div>
 
-                  <div class="row">
+                  <div class="row mt-3">
                   <input type="hidden" name="tu" id="" value="<?php
                                             echo date('d-m-Y H:i:s'); // Format: DD-BB-TTTT HH:MM:SS
                                         ?>"/>

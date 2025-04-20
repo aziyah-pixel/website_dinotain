@@ -35,7 +35,7 @@ if ($result->num_rows > 0) {
 if(isset($_POST["dataTransaksi"]) ) {
   
   if(tambahdataTransaksi($_POST) > 0) {
-    header("Location: detail_transaksi.php?id_transaksi=".$kodeTransaksi);
+    header("Location: tambahTransaksi.php?id_transaksi=".$kodeTransaksi);
   }else {
     echo "<script>
     alert('Data ada yang salah!');
@@ -339,10 +339,10 @@ if(isset($_POST["dataTransaksi"]) ) {
                           </div>
                           <div class="col-sm-10">
                           <select class="form-select col-sm-10" id="exampleFormControlSelect1" aria-label="Default select example" name="pelangan">
-                            <option selected>pilih Pelangan</option>
-                            <?php foreach ($pelangan as $item) : ?>
-                              <option value="<?= $item["id_pelangan"]; ?>"><?= $item["nama_pelangan"]; ?></option>                             
-                           <?php endforeach; ?>
+                          <option selected>Pilih Pelanggan</option>
+                              <?php foreach ($pelangan as $item) : ?>
+                                  <option value="<?= $item["id_pelangan"]; ?>"><?= $item["nama_pelangan"]; ?></option>
+                              <?php endforeach; ?>
                           </select>
                         </div>
                         </div>

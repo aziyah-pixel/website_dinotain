@@ -270,7 +270,7 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
                           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahTransaksi<?=$kodeTransaksi;?>">Tambah Barang</button>
 
                           <!-- tambah Modal -->
-<div class="modal fade" id="tambahTransaksi<?=$kodeTransaksi;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal fade" id="tambahTransaksi<?=$kodeTransaksi;?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                   <div class="modal-dialog">
                                     <div class="modal-content">
                                       <div class="modal-header">
@@ -337,7 +337,7 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
                                   </div>
                                 </div>
                                 
-                                <!-- /tambah-->
+                            <!-- /tambah-->
                           </div>
                         </div>
                </div>

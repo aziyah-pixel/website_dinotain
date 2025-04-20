@@ -48,7 +48,7 @@
 
 /* ? .demo-vertical-spacing class is used to have vertical margins between elements. To remove margin-top from the first-child, use .demo-only-element class with .demo-vertical-spacing class. For example, we have used this class in forms-input-groups.html file. */
 .demo-vertical-spacing > * {
-  margin-top: 1rem !important;
+  /*margin-top: 1rem !important;*/
   margin-bottom: 0 !important;
 }
 .demo-vertical-spacing.demo-only-element > :first-child {
@@ -56,7 +56,7 @@
 }
 
 .demo-vertical-spacing-lg > * {
-  margin-top: 1.875rem !important;
+  /*margin-top: 1.875rem !important;*/
   margin-bottom: 0 !important;
 }
 .demo-vertical-spacing-lg.demo-only-element > :first-child {
@@ -64,7 +64,7 @@
 }
 
 .demo-vertical-spacing-xl > * {
-  margin-top: 5rem !important;
+  /*margin-top: 5rem !important;*/
   margin-bottom: 0 !important;
 }
 .demo-vertical-spacing-xl.demo-only-element > :first-child {

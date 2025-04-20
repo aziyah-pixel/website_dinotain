@@ -52,6 +52,24 @@ $kategori = queryReadData("SELECT * FROM tbl_katagori");
 $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_user'");
 
 //$informatika = "informatika";
+
+if(isset($_POST['kirim'])){
+  $user = $_POST['id_use'];
+  $waktu = $_POST['wak'];
+  $kate = $_POST['kapeng'];
+  $isi = $_POST['isi'];
+
+  $tambahaduan = mysqli_query($connection,"INSERT INTO tbl_inbox_cs (id_user, katagori, isi_inbox, tanggal) VALUES ('$user', '$kate', '$isi', '$waktu')");
+
+  if($tambahaduan){
+    header('location:setingAkun.php');
+  }else{
+    echo"<script>
+      alert('Data gagal dihapus!');
+      </script>";
+  }
+}
+
 ?>
 
 
@@ -113,6 +131,7 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
     <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
     <!-- Page CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Helpers -->
     <script src="../assets/vendor/js/helpers.js"></script>
@@ -407,6 +426,57 @@ $akun = mysqli_query($connection,"SELECT * FROM tbl_user WHERE id_user = '$id_us
                           <div class="mb-3 col-md-6">
                             <label for="state" class="form-label">pesan nota</label>
                             <input class="form-control" type="text" id="state" name="pesan_nota" value="<?=$pesan;?>" />
+                          </div>
+                          <div class="mb-3 col-md-6 row mt-3">
+                            <label for="state" class="form-label"></label>
+                            <div class="col-md-6 text-end">
+                             <!-- Button trigger modal -->
+                              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#pengaduan">
+                                Pengaduan
+                              </button>
+
+                              <!-- Modal -->
+                              <div class="modal fade" id="pengaduan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <form action="" method="post">
+                                        <div class="row text-start">
+                                        <input type="hidden" name="id_use" value="<?=$id_user; ?>">
+                                        <input type="hidden" name="wak" id="" value="<?php
+                                            echo date('Y-m-d'); // Format: DD-BB-TTTT HH:MM:SS
+                                        ?>">
+                                        <div class="mb-3 col-md-12">
+                                          <label for="timeZones" class="form-label">Kategori Pengaduan</label>
+                                          <select id="timeZones" class="select2 form-select" name="kapeng">
+                                          <option selected>pilih kategori</option>
+                                            <option>Pengaduan</option>
+                                            <option>Saran</option>
+                                            <option>Kritik</option>
+                                          </select>
+                                        </div>
+                                        <div class="mb-3">
+                                          <label for="exampleFormControlTextarea1" class="form-label">Isi</label>
+                                          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="isi" required></textarea>
+                                        </div>
+                                        <button type="submit" name="kirim" class="btn btn-primary">Kirim</button>
+                                        </div>
+                                      </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <a href="https://api.whatsapp.com/send/?phone=6282137374862&text&type=phone_number&app_absent=0" class="btn btn-success" target="blank">
+                              <i class="bi bi-whatsapp"></i> Konsultasi
+                              </a>
+                            </div>
                           </div>
                         </div>
                         <div class="mt-2">

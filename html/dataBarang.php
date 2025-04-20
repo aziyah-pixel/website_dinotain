@@ -14,14 +14,14 @@ require "../include/function.php";
 if(isset($_POST["tambahBarang"]) ) {
   
   if(tambahBarang($_POST) > 0) {
-    header('location: databarang.php');
-    exit; 
+    header("Location: databarang.php");
   }else {
     echo "<script>
-    alert('Data buku gagal ditambahkan!');
+    alert('Data  gagal ditambahkan!');
     </script>";
   }
 }
+
 
 ?>
 
@@ -288,7 +288,7 @@ if(isset($_POST["tambahBarang"]) ) {
                       <h5 class="mb-0">Input Barang</h5>
                     </div>
                     <div class="card-body">
-                      <form method="post">
+                      <form method="post" enctype="multipart/form-data">
                         <div class="row mb-3">
                         <input type="hidden" name="id_user" value="<?php echo $_SESSION['tbl_user']['id_user']; ?>">
                           <label class="col-sm-2 col-form-label" for="basic-default-kode">Kode Produk</label>
@@ -319,6 +319,12 @@ if(isset($_POST["tambahBarang"]) ) {
                               aria-describedby="basic-default-stok"
                               required
                             />
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                         <label for="formFile" class="col-sm-2 col-form-label">Foto Produk</label>
+                          <div class="col-sm-10">
+                          <input class="form-control" type="file" id="formFileMultiple" name="foto_produk"require/>
                           </div>
                         </div>
                         <div class="row justify-content-end">
