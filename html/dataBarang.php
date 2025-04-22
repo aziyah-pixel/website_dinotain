@@ -324,7 +324,7 @@ if(isset($_POST["tambahBarang"]) ) {
                         <div class="row mb-3">
                          <label for="formFile" class="col-sm-2 col-form-label">Foto Produk</label>
                           <div class="col-sm-10">
-                          <input class="form-control" type="file" id="formFileMultiple" name="foto_produk"require/>
+                          <input class="form-control" type="file" id="formFileMultiple" name="foto_produk" />
                           </div>
                         </div>
                         <div class="row justify-content-end">

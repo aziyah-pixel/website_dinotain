@@ -29,71 +29,83 @@ function tambahBarang($dataBarang) {
   $idbarang = htmlspecialchars($dataBarang["id_barang"]);
   $namabarang = htmlspecialchars($dataBarang["nama_barang"]);
   $harga = htmlspecialchars($dataBarang["harga"]);  
-  $img = uploadimg();
- 
-  
-  if(!$img) {
-    return 0;
+  $img = uploadimg($namabarang);
+
+  if (!$img) {
+      return 0;
   } 
-  
+
   $queryInsertDataBarang = "INSERT INTO tbl_barang VALUES('$id_user', '$idbarang', '$namabarang', '$harga', '$img')";
-  
+
   mysqli_query($connection, $queryInsertDataBarang);
   return mysqli_affected_rows($connection);
-  
 }       
 
+function uploadimg($nama_barang) {
+  $namaFile = $_FILES["foto_produk"]["name"] ?? '';
+  $ukuranFile = $_FILES["foto_produk"]["size"] ?? 0;
+  $error = $_FILES["foto_produk"]["error"] ?? 4;
+  $tmpName = $_FILES["foto_produk"]["tmp_name"] ?? '';
 
-
-function uploadimg() {
-  $namaFile = $_FILES["foto_produk"]["name"];
-  $ukuranFile = $_FILES["foto_produk"]["size"];
-  $error = $_FILES["foto_produk"]["error"];
-  $tmpName = $_FILES["foto_produk"]["tmp_name"];
-  
   // cek apakah ada gambar yg diupload
-  if($error === 4) {
-    echo "<script>
-    alert('Silahkan upload foto terlebih dahulu!')
-    </script>";
-    return 0;
+  if($error === 4 || empty($namaFile)) {
+      // Tidak ada gambar diupload → buat logo otomatis
+      return createLogo($nama_barang);
   }
-  
-  // cek kesesuaian format gambar
-  $jpg = "jpg";
-  $jpeg = "jpeg";
-  $png = "png";
-  $svg = "svg";
-  $bmp = "bmp";
-  $psd = "psd";
-  $tiff = "tiff";
-  $formatGambarValid = [$jpg, $jpeg, $png, $svg, $bmp, $psd, $tiff];
-  $ekstensiGambar = explode('.', $namaFile);
-  $ekstensiGambar = strtolower(end($ekstensiGambar));
-  
+
+  $formatGambarValid = ['jpg', 'jpeg', 'png', 'svg', 'bmp', 'psd', 'tiff'];
+  $ekstensiGambar = strtolower(pathinfo($namaFile, PATHINFO_EXTENSION));
+
   if(!in_array($ekstensiGambar, $formatGambarValid)) {
-    echo "<script>
-    alert('Format file tidak sesuai');
-    </script>";
-    return 0;
+      echo "<script>alert('Format file tidak sesuai');</script>";
+      return 0;
   }
-  
-  // batas ukuran file
+
   if($ukuranFile > 2000000) {
-    echo "<script>
-    alert('Ukuran file terlalu besar!');
-    </script>";
-    return 0;
+      echo "<script>alert('Ukuran file terlalu besar!');</script>";
+      return 0;
   }
-  
-   //generate nama file baru, agar nama file tdk ada yg sama
-  $namaFileBaru = uniqid();
-  $namaFileBaru .= ".";
-  $namaFileBaru .= $ekstensiGambar;
-  
+
+  $namaFileBaru = uniqid() . "." . $ekstensiGambar;
   move_uploaded_file($tmpName, '../assets/img/produk/' . $namaFileBaru);
   return $namaFileBaru;
-} 
+}
+
+function createLogo($nama_barang) {
+  $inisial = strtoupper(substr($nama_barang, 0, 2));
+  
+  $width = 200;
+  $height = 200;
+  $image = imagecreatetruecolor($width, $height);
+  
+  $backgroundColor = imagecolorallocate($image,  240, 240, 240); // Putih
+  $textColor = imagecolorallocate($image, 0, 0, 0); // Hitam
+  
+  imagefilledrectangle($image, 0, 0, $width, $height, $backgroundColor);
+  
+  $fontPath = '../assets/vendor/fonts/FREESCPT.TTF'; // Sesuaikan path ini
+  $fontSize = 50;
+
+  if (!file_exists($fontPath)) {
+      echo "<script>alert('Font tidak ditemukan. Harap pastikan path font benar.');</script>";
+      return 0;
+  }
+
+  $textBox = imagettfbbox($fontSize, 0, $fontPath, $inisial);
+  $textWidth = $textBox[2] - $textBox[0];
+  $textHeight = $textBox[1] - $textBox[7];
+  
+  $x = ($width - $textWidth) / 2;
+  $y = ($height - $textHeight) / 2 + $textHeight;
+
+  imagettftext($image, $fontSize, 0, $x, $y, $textColor, $fontPath, $inisial);
+  
+  $namaFileBaru = uniqid() . '.png';
+  imagepng($image, '../assets/img/produk/' . $namaFileBaru);
+  imagedestroy($image);
+  
+  return $namaFileBaru;
+}
 
 // Updete data Barang
 if(isset($_POST['update_barang'])){

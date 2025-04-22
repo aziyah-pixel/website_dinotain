@@ -35,7 +35,7 @@ if ($result->num_rows > 0) {
 if(isset($_POST["dataTransaksi"]) ) {
   
   if(tambahdataTransaksi($_POST) > 0) {
-    header("Location: tambahTransaksi.php?id_transaksi=".$kodeTransaksi);
+    header("Location: kasir.php?id_transaksi=".$kodeTransaksi);
   }else {
     echo "<script>
     alert('Data ada yang salah!');

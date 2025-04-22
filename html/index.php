@@ -561,7 +561,7 @@ $monthlyIncomeDataJson = json_encode($monthlyIncomeData);*/
                           WHERE MONTH(t.tanggal) = ? AND YEAR(t.tanggal) = ? AND t.id_user = ?
                           GROUP BY b.id_barang
                           ORDER BY total_qty DESC
-                          LIMIT 5
+                          LIMIT 4
                           ";
                           
                           $stmt = $connection->prepare($dataBarang);

@@ -15,7 +15,7 @@ while($datauser=mysqli_fetch_array($data)){
 };
 
 $kodeTransaksi = $_GET["id_transaksi"];
-var_dump($kodeTransaksi);
+//var_dump($kodeTransaksi);
 $dataTransaksi = queryReadData("SELECT * FROM tbl_transaksi WHERE kode_transaksi='$kodeTransaksi'");
 
 if (empty($dataTransaksi) || !is_array($dataTransaksi) || !isset($dataTransaksi[0])) {
@@ -114,116 +114,21 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
 
   <body>
     <!-- Layout wrapper -->
-    <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-wrapper">
       <div class="layout-container">
 
         <!-- Menu -->
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-          <div class="app-brand demo">
-          <a href="index.php" class="app-brand-link">
-              <span class="app-brand-logo demo">
-              <img src="../assets/img/icons/brands/logo.jpg" alt="" srcset="">
-              </span>
-            </a>
-
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-              <i class="bx bx-chevron-left bx-sm align-middle"></i>
-            </a>
-          </div>
-
-          <div class="menu-inner-shadow"></div>
-
-          <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-            <li class="menu-item">
-              <a href="index.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
-              </a>
-            </li>
-
-              <!-- Berita -->
-              <li class="menu-item">
-              <a href="berita.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-notepad'></i>
-                <div data-i18n="Analytics">Berita</div>
-              </a>
-            </li>
-
-             <!-- Transaksi -->
-             <li class="menu-item active">
-              <a href="transaksi.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-cart-alt"></i>
-                <div data-i18n="Analytics">Transaksi</div>
-              </a>
-            </li>
-
-          <!--Master Data-->
-            <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">Master Data</span>
-            </li>
-            <!-- data barang -->
-            <li class="menu-item">
-              <a href="dataBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-package' ></i>
-                <div data-i18n="Analytics">Input Barang</div>
-              </a>
-            </li>
-             <!-- data pelangan -->
-             <li class="menu-item">
-              <a href="dataPelangan.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bxs-user-account'></i>
-                <div data-i18n="Analytics">Input Pelangan</div>
-              </a>
-            </li>
-
-          <!--Laporan-->
-              <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">Laporan</span>
-            </li>
-            <!-- laporan barang -->
-            <li class="menu-item">
-              <a href="laporanBarang.php" class="menu-link">
-               <i class='menu-icon tf-icons bx bx-file'></i>
-                <div data-i18n="Analytics">Laporan Barang</div>
-              </a>
-            </li>
-             <!-- laporan tansaksi -->
-             <li class="menu-item">
-              <a href="laporanTransaksi.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-box'></i>
-                <div data-i18n="Analytics">Laporan Transaksi</div>
-              </a>
-            </li>
-
-          <!--Pages-->
-          <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">Seting</span>
-            </li>
-            <li class="menu-item">
-              <a href="setingAkun.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-user-circle'></i>
-                <div data-i18n="Analytics">Account</div>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="../Sign/logout.php" class="menu-link">
-              <i class='menu-icon tf-icons bx bx-lock-open-alt'></i>
-                <div data-i18n="Analytics">Log Out</div>
-              </a>
-            </li>
-          </ul>
-        </aside>
+       
         <!-- / Menu -->
 
         <!-- Layout container -->
-        <div class="layout-page">
+     
 
           <!-- Content wrapper -->
-          <div class="content-wrapper">
+          <div class="content-wrapper mt-0">
             <!-- Content -->
 
-            <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="container-xxl flex-grow-1">
               <div class="row">
 
               <form method="post" id="detailtransaksiForm">
@@ -339,7 +244,7 @@ $h1 = mysqli_num_rows($Detail);//jumlah pelangan
               </div>
             </div>
             <!-- / Content -->
-          </div>
+        
             <!-- Footer -->
             <footer class="content-footer footer bg-footer-theme">
               <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">

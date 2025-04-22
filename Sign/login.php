@@ -89,7 +89,7 @@
   <body>
     <!-- Content -->
 
-    <div class="container-xxl">
+    <div class="container-xxl" style="background-image: url('../assets/img/backgrounds/bg-login.jpg'); background-size: cover; background-position: center; opacity: 0,5; z-index: -1;">
       <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner">
           <!-- Register -->
@@ -138,9 +138,9 @@
               </form>
 
               <p class="text-center">
-                <span>New on our platform?</span>
+                <span>belum punya akun?</span>
                 <a href="register.php">
-                  <span>Create an account</span>
+                  <span>Buat akun</span>
                 </a>
               </p>
             </div>
